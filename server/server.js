@@ -4450,10 +4450,11 @@ async function main() {
               );
 
          if (!fs.existsSync(filePath)) {
-  return redirectRelease(
-    res,
-    fileName
-  );
+  return proxyRemoteRelease(
+  res,
+  fileName
+);
+  
 }
             const uses =
               Number(
