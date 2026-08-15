@@ -2360,9 +2360,6 @@ async function sendInvoice(
         },
       ],
 
-      subscription_period:
-        MONTH,
-
       start_parameter:
         `buy_${plan}`,
     },
