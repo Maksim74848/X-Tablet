@@ -1,5 +1,5 @@
 {
-  "botToken": "PASTE_BOT_TOKEN_HERE",
+  "botToken": "8834144738:AAF580tB2sJSbxtqMps68ddkQnzezEWJsOY",
   "adminTelegramId": 0,
   "publicSiteUrl": "https://YOUR_SITE",
   "publicApiUrl": "https://YOUR_LICENSE_SERVER",
@@ -12,8 +12,8 @@
     "linux": "X-Tablet-Linux-x64.tar.gz",
     "macos": "X-Tablet-macOS.dmg"
   },
-  "adminToken": "PASTE_A_LONG_RANDOM_ADMIN_TOKEN_HERE",
+  "adminToken": "U_S_A_D_1_4"
   "termsUrl": "https://YOUR_SITE/terms",
   "privacyUrl": "https://YOUR_SITE/privacy",
-  "telegramBotUrl": "https://t.me/YOUR_XTABLET_BOT"
+  "telegramBotUrl": "https://t.me/XTabletStoreBot"
 }
