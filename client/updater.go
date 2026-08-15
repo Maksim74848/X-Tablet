@@ -14,41 +14,48 @@ import (
 	"time"
 )
 
-const currentXTabletVersion = "1.0.24"
+var buildVersion = "0.0.0"
 
-type updateInfo struct {
-	Version string `json:"version"`
-	URL     string `json:"url"`
-	Notes   string `json:"notes"`
-}
+const releaseAPI =
+	"https://api.github.com/repos/Maksim74848/X-Tablet/releases/latest"
 
 func init() {
-	go func() {
-		time.Sleep(12 * time.Second)
-
-		for {
-			checkForUpdate()
-
-			time.Sleep(
-				30 * time.Minute,
-			)
-		}
-	}()
-}
-
-func checkForUpdate() {
-
 	if runtime.GOOS != "windows" {
 		return
 	}
 
-	api := compiledLicenseServerURL
+	go func() {
+		time.Sleep(15 * time.Second)
+		checkForXTabletUpdate()
+	}()
+}
+
+type githubRelease struct {
+	TagName string `json:"tag_name"`
+
+	Assets []struct {
+		Name               string `json:"name"`
+		BrowserDownloadURL string `json:"browser_download_url"`
+	} `json:"assets"`
+}
+
+func checkForXTabletUpdate() {
+
+	if buildVersion == "0.0.0" ||
+		buildVersion == "dev" {
+		return
+	}
+
+	client :=
+		&http.Client{
+			Timeout:
+				12 * time.Second,
+		}
 
 	req, err :=
 		http.NewRequest(
 			http.MethodGet,
-			api+"/v1/update/latest?version="+
-				currentXTabletVersion,
+			releaseAPI,
 			nil,
 		)
 
@@ -56,11 +63,15 @@ func checkForUpdate() {
 		return
 	}
 
-	client :=
-		&http.Client{
-			Timeout:
-				10 * time.Second,
-		}
+	req.Header.Set(
+		"Accept",
+		"application/vnd.github+json",
+	)
+
+	req.Header.Set(
+		"User-Agent",
+		"X-Tablet-Updater/"+buildVersion,
+	)
 
 	resp, err :=
 		client.Do(req)
@@ -76,74 +87,105 @@ func checkForUpdate() {
 		return
 	}
 
-	var info updateInfo
+	var release githubRelease
 
 	if err :=
 		json.NewDecoder(
 			resp.Body,
 		).Decode(
-			&info,
+			&release,
 		); err != nil {
 		return
 	}
 
-	if info.Version == "" ||
-		info.URL == "" {
-		return
-	}
+	latest :=
+		strings.TrimPrefix(
+			strings.TrimSpace(
+				release.TagName,
+			),
+			"v",
+		)
 
-	if !isNewerVersion(
-		currentXTabletVersion,
-		info.Version,
+	if !isVersionGreater(
+		buildVersion,
+		latest,
 	) {
 		return
 	}
 
+	var installerURL string
+
+	for _, asset :=
+		range release.Assets {
+
+		if asset.Name ==
+			"X-Tablet-Windows-Setup.exe" {
+
+			installerURL =
+				asset.BrowserDownloadURL
+
+			break
+		}
+	}
+
+	if installerURL == "" {
+		return
+	}
+
 	if err :=
-		installUpdate(
-			info.URL,
-	); err != nil {
+		downloadAndRunInstaller(
+			installerURL,
+		); err != nil {
+
 		fmt.Println(
-			"X-Tablet update:",
-			err
+			"X-Tablet updater:",
+			err,
 		)
 	}
 }
 
-func isNewerVersion(
+func isVersionGreater(
 	current,
 	latest string,
 ) bool {
 
-	parse := func(
-		v string,
-	) [3]int {
+	parse :=
+		func(
+			value string,
+		) [3]int {
 
-		v =
-			strings.TrimPrefix(
-				v,
-				"v",
-			)
-
-		parts :=
-			strings.Split(
-				v,
-				".",
-			)
-
-		var out [3]int
-
-		for i := 0; i < 3 && i < len(parts); i++ {
-			n, _ :=
-				strconv.Atoi(
-					parts[i]
+			value =
+				strings.TrimPrefix(
+					strings.TrimSpace(
+						value,
+					),
+					"v",
 				)
 
-			out[i] = n
-		}
+			parts :=
+				strings.Split(
+					value,
+					".",
+				)
 
-		return out
-	}
+			var out [3]int
+
+			for i := 0;
+				i < len(parts) &&
+					i < 3;
+				i++ {
+
+				n, _ :=
+					strconv.Atoi(
+						parts[i],
+					)
+
+				out[i] =
+					n
+			}
+
+			return out
+		}
 
 	a :=
 		parse(current)
@@ -165,12 +207,34 @@ func isNewerVersion(
 	return false
 }
 
-func installUpdate(
+func downloadAndRunInstaller(
 	url string,
 ) error {
 
+	client :=
+		&http.Client{
+			Timeout:
+				5 * time.Minute,
+		}
+
+	req, err :=
+		http.NewRequest(
+			http.MethodGet,
+			url,
+			nil,
+		)
+
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set(
+		"User-Agent",
+		"X-Tablet-Updater/"+buildVersion,
+	)
+
 	resp, err :=
-		http.Get(url)
+		client.Do(req)
 
 	if err != nil {
 		return err
@@ -178,27 +242,23 @@ func installUpdate(
 
 	defer resp.Body.Close()
 
-	if resp.StatusCode !=
-		http.StatusOK {
+	if resp.StatusCode < 200 ||
+		resp.StatusCode >= 300 {
+
 		return fmt.Errorf(
-			"update download: HTTP %d",
+			"installer download: HTTP %d",
 			resp.StatusCode,
 		)
 	}
 
-	tmpDir :=
-		os.TempDir()
-
-	setupPath :=
+	path :=
 		filepath.Join(
-			tmpDir,
+			os.TempDir(),
 			"X-Tablet-Update.exe",
 		)
 
 	file, err :=
-		os.Create(
-			setupPath
-		)
+		os.Create(path)
 
 	if err != nil {
 		return err
@@ -207,7 +267,7 @@ func installUpdate(
 	_, copyErr :=
 		io.Copy(
 			file,
-			resp.Body
+			resp.Body,
 		)
 
 	closeErr :=
@@ -223,7 +283,7 @@ func installUpdate(
 
 	cmd :=
 		exec.Command(
-			setupPath,
+			path,
 			"/VERYSILENT",
 			"/SUPPRESSMSGBOXES",
 			"/NORESTART",
