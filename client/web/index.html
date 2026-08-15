@@ -1,1200 +1,838 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta
-    name="viewport"
-    content="width=device-width,initial-scale=1,viewport-fit=cover"
-  >
-
-  <meta name="theme-color" content="#06101a">
-
-  <title>X-Tablet</title>
-
-  <style>
-    :root{
-      --bg:#050d15;
-      --bg2:#081522;
-      --panel:#0b1b2b;
-      --panel2:#0e2235;
-      --line:#1d3b52;
-      --line2:#2d5874;
-      --text:#eff7fc;
-      --muted:#91aabd;
-      --blue:#63b8ff;
-      --blue2:#2f7fe9;
-      --green:#53dca8;
-      --yellow:#f0c85a;
-      --red:#ff758b;
-      --shadow:0 25px 80px rgba(0,0,0,.35);
-      --radius:20px;
-    }
-
-    *{
-      box-sizing:border-box;
-    }
-
-    html,
-    body{
-      margin:0;
-      min-height:100%;
-      background:var(--bg);
-      color:var(--text);
-      font-family:
-        Inter,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-    }
-
-    body{
-      min-height:100vh;
-      overflow-x:hidden;
-    }
-
-    button,
-    input{
-      font:inherit;
-    }
-
-    button{
-      cursor:pointer;
-    }
-
-    .hidden{
-      display:none!important;
-    }
-
-    .app{
-      min-height:100vh;
-      display:grid;
-      grid-template-columns:250px minmax(0,1fr);
-    }
-
-    /* =====================================================
-       SIDEBAR
-    ===================================================== */
-
-    .sidebar{
-      position:sticky;
-      top:0;
-      height:100vh;
-      padding:18px 14px;
-      border-right:1px solid var(--line);
-      background:rgba(4,12,20,.9);
-      backdrop-filter:blur(20px);
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:11px;
-      padding:6px 8px 22px;
-    }
-
-    .logo{
-      width:42px;
-      height:42px;
-      display:grid;
-      place-items:center;
-      border-radius:14px;
-      background:
-        linear-gradient(
-          145deg,
-          #9bdefe,
-          #347ce6
-        );
-      color:#03101a;
-      font-weight:950;
-      box-shadow:
-        0 12px 30px
-        rgba(52,124,230,.24);
-    }
-
-    .brand-title{
-      font-size:18px;
-      font-weight:950;
-      letter-spacing:-.035em;
-    }
-
-    .brand-sub{
-      margin-top:2px;
-      color:var(--muted);
-      font-size:10px;
-    }
-
-    .nav{
-      display:grid;
-      gap:5px;
-    }
-
-    .nav-btn{
-      width:100%;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding:12px;
-      border:
-        1px solid
-        transparent;
-      border-radius:13px;
-      background:transparent;
-      color:var(--muted);
-      text-align:left;
-    }
-
-    .nav-btn:hover{
-      color:var(--text);
-      background:#091b2b;
-    }
-
-    .nav-btn.active{
-      background:#0d2235;
-      border-color:#20425b;
-      color:var(--text);
-    }
-
-    .nav-icon{
-      width:22px;
-      text-align:center;
-      font-size:16px;
-    }
-
-    .sidebar-status{
-      position:absolute;
-      left:14px;
-      right:14px;
-      bottom:14px;
-      padding:12px;
-      border:
-        1px solid
-        var(--line);
-      border-radius:14px;
-      background:#071522;
-    }
-
-    .status-line{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      font-size:12px;
-      font-weight:750;
-    }
-
-    .status-dot{
-      width:8px;
-      height:8px;
-      flex:0 0 auto;
-      border-radius:50%;
-      background:#64748b;
-    }
-
-    .status-dot.green{
-      background:var(--green);
-      box-shadow:
-        0 0 0 5px
-        rgba(83,220,168,.1);
-    }
-
-    .status-dot.yellow{
-      background:var(--yellow);
-    }
-
-    .status-dot.red{
-      background:var(--red);
-    }
-
-    .status-small{
-      margin-top:6px;
-      color:var(--muted);
-      font-size:10px;
-      line-height:1.45;
-    }
-
-    /* =====================================================
-       MAIN
-    ===================================================== */
-
-    .main{
-      min-width:0;
-      padding:22px;
-    }
-
-    .topbar{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:18px;
-      margin-bottom:18px;
-    }
-
-    .eyebrow{
-      margin-bottom:5px;
-      color:#7bc8ff;
-      font-size:10px;
-      font-weight:900;
-      letter-spacing:.16em;
-      text-transform:uppercase;
-    }
-
-    .page-title{
-      margin:0;
-      font-size:31px;
-      line-height:1.05;
-      letter-spacing:-.045em;
-    }
-
-    .top-actions{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
-
-    .btn{
-      min-height:42px;
-      padding:
-        9px 14px;
-      border:
-        1px solid
-        var(--line);
-      border-radius:12px;
-      background:#0c2031;
-      color:var(--text);
-      font-size:12px;
-      font-weight:850;
-    }
-
-    .btn:hover{
-      border-color:var(--line2);
-      background:#10283d;
-    }
-
-    .btn-primary{
-      border-color:#3c91df;
-      background:
-        linear-gradient(
-          135deg,
-          var(--blue2),
-          #245dc6
-        );
-    }
-
-    .btn-green{
-      border-color:#2d8c70;
-      background:
-        linear-gradient(
-          135deg,
-          #249f7d,
-          #19705a
-        );
-    }
-
-    .btn-danger{
-      color:#ffb0bc;
-      border-color:#66303d;
-      background:#281119;
-    }
-
-    .grid{
-      display:grid;
-      gap:13px;
-    }
-
-    .grid-2{
-      grid-template-columns:
-        repeat(2,minmax(0,1fr));
-    }
-
-    .grid-3{
-      grid-template-columns:
-        repeat(3,minmax(0,1fr));
-    }
-
-    .card{
-      min-width:0;
-      padding:18px;
-      border:
-        1px solid
-        var(--line);
-      border-radius:var(--radius);
-      background:
-        linear-gradient(
-          145deg,
-          rgba(13,34,52,.98),
-          rgba(7,19,30,.98)
-        );
-      box-shadow:var(--shadow);
-    }
-
-    .hero-card{
-      padding:25px;
-    }
-
-    .hero-title{
-      margin:5px 0 8px;
-      font-size:30px;
-      letter-spacing:-.045em;
-    }
-
-    .hero-text{
-      max-width:760px;
-      margin:0;
-      color:#a8bdcc;
-      line-height:1.65;
-      font-size:14px;
-    }
-
-    .section-title{
-      margin:0 0 7px;
-      font-size:19px;
-      letter-spacing:-.025em;
-    }
-
-    .muted{
-      color:var(--muted);
-    }
-
-    .small-text{
-      color:var(--muted);
-      font-size:11px;
-      line-height:1.55;
-    }
-
-    /* =====================================================
-       ONBOARDING
-    ===================================================== */
-
-    .onboarding{
-      position:fixed;
-      inset:0;
-      z-index:100;
-      display:grid;
-      place-items:center;
-      padding:16px;
-      background:
-        radial-gradient(
-          circle at 50% 0%,
-          rgba(62,145,222,.18),
-          transparent 35%
-        ),
-        rgba(2,8,14,.94);
-      backdrop-filter:blur(20px);
-    }
-
-    .onboarding-card{
-      width:min(720px,100%);
-      padding:30px;
-      border:
-        1px solid
-        #294c66;
-      border-radius:26px;
-      background:
-        linear-gradient(
-          145deg,
-          #0d263b,
-          #071520
-        );
-      box-shadow:
-        0 35px 110px
-        rgba(0,0,0,.55);
-    }
-
-    .onboarding-logo{
-      width:58px;
-      height:58px;
-      display:grid;
-      place-items:center;
-      border-radius:17px;
-      background:
-        linear-gradient(
-          145deg,
-          #98dcff,
-          #367ce3
-        );
-      color:#03101a;
-      font-size:18px;
-      font-weight:950;
-    }
-
-    .onboarding h2{
-      margin:
-        18px 0 8px;
-      font-size:32px;
-      letter-spacing:-.045em;
-    }
-
-    .onboarding p{
-      margin:0;
-      color:#9fb7c7;
-      line-height:1.65;
-    }
-
-    .steps{
-      display:grid;
-      gap:9px;
-      margin-top:22px;
-    }
-
-    .step{
-      display:grid;
-      grid-template-columns:38px 1fr auto;
-      gap:11px;
-      align-items:center;
-      padding:13px;
-      border:
-        1px solid
-        #18374f;
-      border-radius:14px;
-      background:#071521;
-    }
-
-    .step-num{
-      width:38px;
-      height:38px;
-      display:grid;
-      place-items:center;
-      border-radius:12px;
-      background:#102d45;
-      color:#a7dcfb;
-      font-weight:950;
-    }
-
-    .step-title{
-      font-weight:850;
-    }
-
-    .step-text{
-      margin-top:3px;
-      color:#728da0;
-      font-size:11px;
-      line-height:1.4;
-    }
-
-    .step-status{
-      padding:5px 8px;
-      border-radius:999px;
-      border:
-        1px solid
-        #254962;
-      color:#99bbd0;
-      font-size:9px;
-      font-weight:850;
-      white-space:nowrap;
-    }
-
-    .step-status.ok{
-      color:#9bf1d1;
-      border-color:#28664f;
-      background:#09241c;
-    }
-
-    .step-status.warn{
-      color:#f1d27b;
-      border-color:#6a5624;
-      background:#241d09;
-    }
-
-    .onboarding-actions{
-      display:flex;
-      gap:9px;
-      margin-top:20px;
-    }
-
-    .onboarding-actions .btn{
-      flex:1;
-    }
-
-    /* =====================================================
-       STATUS / STATS
-    ===================================================== */
-
-    .stat-grid{
-      display:grid;
-      grid-template-columns:
-        repeat(4,minmax(0,1fr));
-      gap:9px;
-    }
-
-    .stat{
-      padding:14px;
-      border:
-        1px solid
-        #18334a;
-      border-radius:14px;
-      background:#071522;
-    }
-
-    .stat-label{
-      color:var(--muted);
-      font-size:9px;
-      font-weight:800;
-      letter-spacing:.1em;
-      text-transform:uppercase;
-    }
-
-    .stat-value{
-      margin-top:7px;
-      font-size:23px;
-      font-weight:900;
-      letter-spacing:-.04em;
-    }
-
-    .stat-note{
-      margin-top:4px;
-      color:#667f92;
-      font-size:10px;
-    }
-
-    .status-box{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      padding:15px;
-      border:
-        1px solid
-        #1b4058;
-      border-radius:15px;
-      background:#071723;
-    }
-
-    .big-dot{
-      width:12px;
-      height:12px;
-      flex:0 0 auto;
-      border-radius:50%;
-      background:#64748b;
-    }
-
-    .big-dot.green{
-      background:var(--green);
-      box-shadow:
-        0 0 0 7px
-        rgba(83,220,168,.08);
-    }
-
-    .big-dot.red{
-      background:var(--red);
-    }
-
-    .status-main{
-      font-weight:900;
-    }
-
-    .status-sub{
-      margin-top:3px;
-      color:var(--muted);
-      font-size:11px;
-    }
-
-    /* =====================================================
-       ACCOUNT
-    ===================================================== */
-
-    .account{
-      display:grid;
-      grid-template-columns:
-        1.1fr
-        .9fr;
-      gap:13px;
-    }
-
-    .account-name{
-      font-size:26px;
-      font-weight:950;
-      letter-spacing:-.04em;
-    }
-
-    .account-meta{
-      margin-top:5px;
-      color:var(--muted);
-      font-size:11px;
-    }
-
-    .license-key{
-      display:inline-block;
-      margin-top:14px;
-      padding:
-        9px 11px;
-      border:
-        1px solid
-        #24465f;
-      border-radius:11px;
-      background:#06131f;
-      font:
-        700 11px
-        ui-monospace,
-        SFMono-Regular,
-        Consolas,
-        monospace;
-      color:#c9e8f9;
-      word-break:break-all;
-    }
-
-    .info-list{
-      display:grid;
-      gap:8px;
-      margin-top:16px;
-    }
-
-    .info-row{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      padding:
-        9px 0;
-      border-bottom:
-        1px solid
-        #162f42;
-      font-size:11px;
-    }
-
-    .info-row:last-child{
-      border-bottom:0;
-    }
-
-    /* =====================================================
-       PHONE PAIRING
-    ===================================================== */
-
-    .pair{
-      display:grid;
-      grid-template-columns:
-        1fr
-        360px;
-      gap:15px;
-    }
-
-    .pair-steps{
-      display:grid;
-      gap:9px;
-      margin-top:16px;
-    }
-
-    .pair-step{
-      display:grid;
-      grid-template-columns:
-        30px
-        1fr;
-      gap:9px;
-      align-items:start;
-      padding:11px;
-      border:
-        1px solid
-        #18374e;
-      border-radius:13px;
-      background:#071522;
-    }
-
-    .pair-num{
-      width:30px;
-      height:30px;
-      display:grid;
-      place-items:center;
-      border-radius:10px;
-      background:#102d45;
-      color:#a7dbf9;
-      font-weight:900;
-    }
-
-    .qr-panel{
-      display:grid;
-      place-items:center;
-      padding:18px;
-      border:
-        1px solid
-        #203f58;
-      border-radius:18px;
-      background:#081522;
-      text-align:center;
-    }
-
-    .qr-image{
-      width:220px;
-      height:220px;
-      border-radius:8px;
-      background:#fff;
-      object-fit:contain;
-    }
-
-    .pair-url{
-      margin-top:12px;
-      max-width:320px;
-      overflow-wrap:anywhere;
-      color:#9fcce4;
-      font-size:11px;
-    }
-
-    .waiting{
-      margin-top:9px;
-      color:var(--yellow);
-      font-size:11px;
-    }
-
-    /* =====================================================
-       X-PLANE
-    ===================================================== */
-
-    .xp-card{
-      position:relative;
-      overflow:hidden;
-      min-height:250px;
-    }
-
-    .xp-card.offline{
-      background:
-        radial-gradient(
-          circle at 80% 10%,
-          rgba(255,117,139,.09),
-          transparent 25%
-        ),
-        linear-gradient(
-          145deg,
-          #0e1b28,
-          #07131d
-        );
-    }
-
-    .xp-card.online{
-      background:
-        radial-gradient(
-          circle at 80% 10%,
-          rgba(83,220,168,.11),
-          transparent 25%
-        ),
-        linear-gradient(
-          145deg,
-          #0c2637,
-          #071720
-        );
-    }
-
-    .xp-big{
-      margin-top:13px;
-      font-size:30px;
-      font-weight:950;
-      letter-spacing:-.045em;
-    }
-
-    .xp-description{
-      max-width:650px;
-      margin-top:7px;
-      color:#91aabd;
-      font-size:12px;
-      line-height:1.6;
-    }
-
-    .xp-actions{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:17px;
-    }
-
-    /* =====================================================
-       FLIGHT DATA
-    ===================================================== */
-
-    .flight-grid{
-      display:grid;
-      grid-template-columns:
-        repeat(4,minmax(0,1fr));
-      gap:9px;
-    }
-
-    .flight-value{
-      padding:14px;
-      border:
-        1px solid
-        #18364d;
-      border-radius:15px;
-      background:#071522;
-    }
-
-    .flight-label{
-      color:var(--muted);
-      font-size:9px;
-      font-weight:800;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-    }
-
-    .flight-number{
-      margin-top:8px;
-      font-size:25px;
-      font-weight:900;
-      letter-spacing:-.04em;
-    }
-
-    .flight-unit{
-      margin-left:3px;
-      color:#7f99ab;
-      font-size:10px;
-      font-weight:650;
-    }
-
-    /* =====================================================
-       COMMANDS
-    ===================================================== */
-
-    .command-grid{
-      display:grid;
-      grid-template-columns:
-        repeat(4,minmax(0,1fr));
-      gap:8px;
-    }
-
-    .command{
-      min-height:72px;
-      padding:11px;
-      border:
-        1px solid
-        #17334a;
-      border-radius:13px;
-      background:#071522;
-      color:var(--text);
-      text-align:left;
-    }
-
-    .command:hover{
-      border-color:#2f6589;
-      background:#0c2031;
-    }
-
-    .command-name{
-      display:block;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-      font-weight:850;
-    }
-
-    .command-sub{
-      display:block;
-      margin-top:5px;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-      color:#708a9d;
-      font-size:10px;
-    }
-
-    .search{
-      width:min(300px,100%);
-      min-height:40px;
-      padding:9px 11px;
-      border:
-        1px solid
-        var(--line);
-      border-radius:12px;
-      background:#071521;
-      color:var(--text);
-      outline:none;
-    }
-
-    /* =====================================================
-       DIAGNOSTICS
-    ===================================================== */
-
-    .diag-grid{
-      display:grid;
-      grid-template-columns:
-        repeat(3,minmax(0,1fr));
-      gap:9px;
-    }
-
-    .diag{
-      padding:13px;
-      border:
-        1px solid
-        #18364d;
-      border-radius:13px;
-      background:#071522;
-    }
-
-    .diag-label{
-      color:var(--muted);
-      font-size:9px;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-    }
-
-    .diag-value{
-      margin-top:7px;
-      overflow-wrap:anywhere;
-      font-size:13px;
-      font-weight:850;
-    }
-
-    /* =====================================================
-       MODAL
-    ===================================================== */
-
-    .modal-backdrop{
-      position:fixed;
-      inset:0;
-      z-index:120;
-      display:grid;
-      place-items:center;
-      padding:15px;
-      background:rgba(0,0,0,.72);
-      backdrop-filter:blur(12px);
-    }
-
-    .modal{
-      width:min(720px,100%);
-      max-height:92vh;
-      overflow:auto;
-      padding:23px;
-      border:
-        1px solid
-        #264761;
-      border-radius:22px;
-      background:#091a29;
-      box-shadow:
-        0 35px 100px
-        rgba(0,0,0,.55);
-    }
-
-    .modal-header{
-      display:flex;
-      justify-content:space-between;
-      gap:15px;
-    }
-
-    .modal-title{
-      margin:0;
-      font-size:24px;
-      letter-spacing:-.04em;
-    }
-
-    .modal-close{
-      width:38px;
-      height:38px;
-      border:
-        1px solid
-        var(--line);
-      border-radius:11px;
-      background:#071522;
-      color:var(--text);
-    }
-
-    /* =====================================================
-       TOAST
-    ===================================================== */
-
-    #toast{
-      position:fixed;
-      left:50%;
-      bottom:24px;
-      z-index:200;
-      max-width:
-        calc(100vw - 24px);
-      padding:
-        10px 14px;
-      border:
-        1px solid
-        #2b526d;
-      border-radius:12px;
-      background:#0d2437;
-      color:var(--text);
-      font-size:12px;
-      opacity:0;
-      pointer-events:none;
-      transform:
-        translate(-50%,12px);
-      transition:.2s;
-    }
-
-    #toast.show{
-      opacity:1;
-      transform:
-        translate(-50%,0);
-    }
-
-    /* =====================================================
-       MOBILE
-    ===================================================== */
-
-    .mobile-nav{
-      display:none;
-    }
-
-    @media(max-width:980px){
-
-      .app{
-        grid-template-columns:1fr;
-      }
-
-      .sidebar{
-        display:none;
-      }
-
-      .main{
-        padding:
-          14px 12px 86px;
-      }
-
-      .topbar{
-        flex-direction:column;
-      }
-
-      .top-actions{
-        width:100%;
-        justify-content:flex-start;
-      }
-
-      .grid-2,
-      .grid-3,
-      .account,
-      .pair{
-        grid-template-columns:1fr;
-      }
-
-      .stat-grid{
-        grid-template-columns:
-          repeat(2,minmax(0,1fr));
-      }
-
-      .flight-grid{
-        grid-template-columns:
-          repeat(2,minmax(0,1fr));
-      }
-
-      .command-grid{
-        grid-template-columns:
-          repeat(2,minmax(0,1fr));
-      }
-
-      .diag-grid{
-        grid-template-columns:
-          repeat(2,minmax(0,1fr));
-      }
-
-      .mobile-nav{
-        position:fixed;
-        left:8px;
-        right:8px;
-        bottom:8px;
-        z-index:80;
-        display:grid;
-        grid-template-columns:
-          repeat(5,1fr);
-        gap:3px;
-        padding:6px;
-        border:
-          1px solid
-          var(--line);
-        border-radius:18px;
-        background:
-          rgba(7,19,30,.96);
-        backdrop-filter:blur(18px);
-        box-shadow:
-          0 16px 45px
-          rgba(0,0,0,.4);
-      }
-
-      .mobile-nav button{
-        border:0;
-        border-radius:11px;
-        padding:7px 3px;
-        background:transparent;
-        color:var(--muted);
-      }
-
-      .mobile-nav button.active{
-        background:#11283c;
-        color:var(--text);
-      }
-
-      .mobile-nav span{
-        display:block;
-        font-size:16px;
-      }
-
-      .mobile-nav small{
-        display:block;
-        margin-top:3px;
-        font-size:8px;
-      }
-    }
-
-    @media(max-width:600px){
-
-      .main{
-        padding:
-          11px 9px 86px;
-      }
-
-      .page-title{
-        font-size:26px;
-      }
-
-      .hero-card{
-        padding:18px;
-      }
-
-      .hero-title{
-        font-size:25px;
-      }
-
-      .stat-grid,
-      .flight-grid,
-      .diag-grid{
-        grid-template-columns:1fr 1fr;
-      }
-
-      .onboarding-card{
-        padding:22px;
-      }
-
-      .onboarding h2{
-        font-size:27px;
-      }
-
-      .step{
-        grid-template-columns:
-          34px 1fr;
-      }
-
-      .step-status{
-        grid-column:
-          2;
-        justify-self:start;
-      }
-
-      .onboarding-actions{
-        flex-direction:column;
-      }
-
-      .qr-image{
-        width:190px;
-        height:190px;
-      }
-
-      .card{
-        border-radius:17px;
-      }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#06101a">
+<title>X-Tablet</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+
+<style>
+:root{
+  --bg:#050d15;
+  --panel:#0b1b2b;
+  --panel2:#0e2235;
+  --line:#203f56;
+  --text:#eef7fc;
+  --muted:#91aabd;
+  --blue:#4b9ff0;
+  --green:#4bd7a4;
+  --yellow:#e9c15d;
+  --red:#ff748b;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html,
+body{
+  margin:0;
+  min-height:100%;
+  background:var(--bg);
+  color:var(--text);
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+body{
+  min-height:100vh;
+}
+
+button,
+input{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.hidden{
+  display:none!important;
+}
+
+.app{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:230px minmax(0,1fr);
+}
+
+.sidebar{
+  position:sticky;
+  top:0;
+  height:100vh;
+  padding:16px 12px;
+  border-right:1px solid var(--line);
+  background:#050d15;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:6px 7px 20px;
+}
+
+.logo{
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  background:
+    linear-gradient(
+      145deg,
+      #a2e1ff,
+      #347de3
+    );
+  color:#03101a;
+  font-weight:950;
+}
+
+.brand b{
+  display:block;
+  font-size:17px;
+}
+
+.brand small{
+  color:var(--muted);
+  font-size:9px;
+}
+
+.nav{
+  display:grid;
+  gap:5px;
+}
+
+.nav button{
+  width:100%;
+  padding:11px 12px;
+  border:1px solid transparent;
+  border-radius:12px;
+  background:transparent;
+  color:var(--muted);
+  text-align:left;
+}
+
+.nav button:hover{
+  background:#0a1a29;
+  color:var(--text);
+}
+
+.nav button.active{
+  background:#0d2235;
+  border-color:#244860;
+  color:var(--text);
+}
+
+.sidebar-status{
+  position:absolute;
+  left:12px;
+  right:12px;
+  bottom:12px;
+  padding:11px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:#071521;
+  font-size:11px;
+}
+
+.dot{
+  display:inline-block;
+  width:8px;
+  height:8px;
+  margin-right:7px;
+  border-radius:50%;
+  background:#64748b;
+}
+
+.dot.green{
+  background:var(--green);
+}
+
+.dot.red{
+  background:var(--red);
+}
+
+.sidebar-sub{
+  margin-top:5px;
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.45;
+}
+
+.main{
+  min-width:0;
+  padding:22px;
+}
+
+.top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:15px;
+  margin-bottom:18px;
+}
+
+.eyebrow{
+  color:#7bc8ff;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+
+.title{
+  margin:5px 0 0;
+  font-size:30px;
+  line-height:1.05;
+  letter-spacing:-.045em;
+}
+
+.top-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  min-height:41px;
+  padding:9px 13px;
+  border:1px solid var(--line);
+  border-radius:11px;
+  background:#0b2031;
+  color:var(--text);
+  font-size:12px;
+  font-weight:850;
+}
+
+.btn:hover{
+  background:#10283b;
+  border-color:#315b76;
+}
+
+.btn-primary{
+  border-color:#428fda;
+  background:
+    linear-gradient(
+      135deg,
+      #4b9ff0,
+      #2865d0
+    );
+}
+
+.btn-green{
+  border-color:#31866d;
+  background:
+    linear-gradient(
+      135deg,
+      #249d7b,
+      #176d56
+    );
+}
+
+.grid{
+  display:grid;
+  gap:12px;
+}
+
+.card{
+  min-width:0;
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:19px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(13,34,52,.98),
+      rgba(7,18,29,.98)
+    );
+}
+
+.card h2,
+.card h3{
+  margin-top:0;
+}
+
+.small{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.6;
+}
+
+.hero{
+  padding:24px;
+}
+
+.hero h2{
+  margin:6px 0 8px;
+  font-size:29px;
+  letter-spacing:-.045em;
+}
+
+.status{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px;
+  border:1px solid #1d435c;
+  border-radius:14px;
+  background:#071723;
+}
+
+.status-dot{
+  width:12px;
+  height:12px;
+  flex:0 0 auto;
+  border-radius:50%;
+  background:var(--red);
+}
+
+.status-dot.online{
+  background:var(--green);
+}
+
+.status-title{
+  font-weight:900;
+}
+
+.status-sub{
+  margin-top:3px;
+  color:var(--muted);
+  font-size:10px;
+}
+
+.stat-grid{
+  display:grid;
+  grid-template-columns:
+    repeat(4,minmax(0,1fr));
+  gap:8px;
+}
+
+.stat{
+  padding:13px;
+  border:1px solid #19364c;
+  border-radius:13px;
+  background:#071522;
+}
+
+.stat label{
+  display:block;
+  color:var(--muted);
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+.stat strong{
+  display:block;
+  margin-top:7px;
+  font-size:22px;
+  letter-spacing:-.04em;
+}
+
+.stat small{
+  display:block;
+  margin-top:3px;
+  color:#688094;
+  font-size:10px;
+}
+
+.account-grid{
+  display:grid;
+  grid-template-columns:
+    1.1fr
+    .9fr;
+  gap:12px;
+}
+
+.account-name{
+  font-size:25px;
+  font-weight:950;
+  letter-spacing:-.04em;
+}
+
+.meta{
+  margin-top:4px;
+  color:var(--muted);
+  font-size:11px;
+}
+
+.license-key{
+  display:inline-block;
+  max-width:100%;
+  margin-top:13px;
+  padding:8px 10px;
+  border:1px solid #294b62;
+  border-radius:10px;
+  background:#06131f;
+  font:
+    700 11px
+    ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+  overflow-wrap:anywhere;
+}
+
+.rows{
+  margin-top:13px;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:8px 0;
+  border-bottom:1px solid #153046;
+  font-size:11px;
+}
+
+.row:last-child{
+  border-bottom:0;
+}
+
+.phone-grid{
+  display:grid;
+  grid-template-columns:
+    minmax(0,1fr)
+    390px;
+  gap:12px;
+}
+
+.steps{
+  display:grid;
+  gap:8px;
+  margin-top:15px;
+}
+
+.step{
+  display:grid;
+  grid-template-columns:
+    32px
+    1fr
+    auto;
+  gap:10px;
+  align-items:center;
+  padding:11px;
+  border:1px solid #19384f;
+  border-radius:13px;
+  background:#071521;
+}
+
+.num{
+  width:32px;
+  height:32px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  background:#102d45;
+  color:#aae0fb;
+  font-weight:900;
+}
+
+.step b{
+  font-size:12px;
+}
+
+.step small{
+  display:block;
+  margin-top:3px;
+  color:var(--muted);
+  line-height:1.45;
+  font-size:10px;
+}
+
+.badge{
+  padding:5px 8px;
+  border:1px solid #264962;
+  border-radius:999px;
+  color:#9bbdd1;
+  font-size:9px;
+  font-weight:850;
+  white-space:nowrap;
+}
+
+.badge.ok{
+  color:#9af0cf;
+  border-color:#2a694f;
+  background:#08231b;
+}
+
+.qr-card{
+  text-align:center;
+}
+
+.qr-wrap{
+  min-height:300px;
+  margin-top:12px;
+  display:grid;
+  place-items:center;
+  padding:18px;
+  border:1px solid #1d4059;
+  border-radius:15px;
+  background:#f7fafc;
+  overflow:hidden;
+}
+
+.qr-wrap svg{
+  display:block;
+  width:270px;
+  height:270px;
+  max-width:100%;
+  background:#fff;
+}
+
+.qr-loading{
+  color:#496273;
+  font-size:11px;
+}
+
+.qr-error{
+  max-width:300px;
+  color:#b2374d;
+  font-size:11px;
+  line-height:1.6;
+}
+
+.address{
+  margin-top:10px;
+  padding:10px;
+  border:1px solid #1d3d54;
+  border-radius:11px;
+  background:#06131f;
+  color:#a9d8ef;
+  font:
+    600 10px
+    ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+  text-align:left;
+  overflow-wrap:anywhere;
+}
+
+.flight-grid{
+  display:grid;
+  grid-template-columns:
+    repeat(4,minmax(0,1fr));
+  gap:8px;
+}
+
+.flight{
+  padding:13px;
+  border:1px solid #19364c;
+  border-radius:13px;
+  background:#071522;
+}
+
+.flight label{
+  display:block;
+  color:var(--muted);
+  font-size:9px;
+  text-transform:uppercase;
+}
+
+.flight strong{
+  display:block;
+  margin-top:7px;
+  font-size:23px;
+}
+
+.flight em{
+  margin-left:3px;
+  color:#71899b;
+  font-size:10px;
+  font-style:normal;
+  font-weight:500;
+}
+
+.command-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.search{
+  width:min(320px,100%);
+  min-height:40px;
+  padding:9px 11px;
+  border:1px solid var(--line);
+  border-radius:11px;
+  background:#071521;
+  color:var(--text);
+  outline:none;
+}
+
+.command-grid{
+  display:grid;
+  grid-template-columns:
+    repeat(4,minmax(0,1fr));
+  gap:8px;
+}
+
+.command{
+  min-height:70px;
+  padding:10px;
+  border:1px solid #18354a;
+  border-radius:12px;
+  background:#071522;
+  color:var(--text);
+  text-align:left;
+}
+
+.command:hover{
+  border-color:#2e668a;
+}
+
+.command b{
+  display:block;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.command small{
+  display:block;
+  margin-top:4px;
+  color:var(--muted);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  display:grid;
+  place-items:center;
+  padding:14px;
+  background:rgba(2,8,14,.94);
+  backdrop-filter:blur(18px);
+}
+
+.welcome{
+  width:min(700px,100%);
+  padding:28px;
+  border:1px solid #294d66;
+  border-radius:24px;
+  background:
+    linear-gradient(
+      145deg,
+      #0d263b,
+      #071520
+    );
+}
+
+.welcome-logo{
+  width:56px;
+  height:56px;
+  display:grid;
+  place-items:center;
+  border-radius:16px;
+  background:
+    linear-gradient(
+      145deg,
+      #98dcff,
+      #367ce3
+    );
+  color:#03101a;
+  font-weight:950;
+}
+
+.welcome h2{
+  margin:17px 0 8px;
+  font-size:31px;
+  letter-spacing:-.045em;
+}
+
+.welcome p{
+  margin:0;
+  color:#9fb7c7;
+  line-height:1.6;
+  font-size:13px;
+}
+
+.welcome-actions{
+  display:flex;
+  gap:8px;
+  margin-top:18px;
+}
+
+.welcome-actions .btn{
+  flex:1;
+}
+
+.mobile{
+  display:none;
+}
+
+#toast{
+  position:fixed;
+  left:50%;
+  bottom:20px;
+  z-index:200;
+  max-width:
+    calc(100vw - 24px);
+  padding:10px 14px;
+  border:1px solid #2c536c;
+  border-radius:11px;
+  background:#0d2437;
+  color:var(--text);
+  font-size:11px;
+  opacity:0;
+  pointer-events:none;
+  transform:translate(-50%,10px);
+  transition:.2s;
+}
+
+#toast.show{
+  opacity:1;
+  transform:translate(-50%,0);
+}
+
+@media(max-width:980px){
+
+  .app{
+    grid-template-columns:1fr;
+  }
+
+  .sidebar{
+    display:none;
+  }
+
+  .main{
+    padding:
+      14px 10px 82px;
+  }
+
+  .top{
+    flex-direction:column;
+  }
+
+  .phone-grid,
+  .account-grid{
+    grid-template-columns:1fr;
+  }
+
+  .stat-grid,
+  .flight-grid{
+    grid-template-columns:
+      repeat(2,1fr);
+  }
+
+  .command-grid{
+    grid-template-columns:
+      repeat(2,1fr);
+  }
+
+  .mobile{
+    position:fixed;
+    left:7px;
+    right:7px;
+    bottom:7px;
+    z-index:80;
+    display:grid;
+    grid-template-columns:
+      repeat(5,1fr);
+    gap:3px;
+    padding:5px;
+    border:1px solid var(--line);
+    border-radius:16px;
+    background:
+      rgba(6,18,29,.96);
+    backdrop-filter:blur(16px);
+  }
+
+  .mobile button{
+    border:0;
+    border-radius:10px;
+    padding:6px 2px;
+    background:transparent;
+    color:var(--muted);
+  }
+
+  .mobile button.active{
+    background:#10273b;
+    color:var(--text);
+  }
+
+  .mobile span{
+    display:block;
+    font-size:15px;
+  }
+
+  .mobile small{
+    display:block;
+    margin-top:2px;
+    font-size:8px;
+  }
+
+}
+
+@media(max-width:600px){
+
+  .main{
+    padding:
+      11px 9px 82px;
+  }
+
+  .title{
+    font-size:26px;
+  }
+
+  .hero h2{
+    font-size:25px;
+  }
+
+  .welcome{
+    padding:21px;
+  }
+
+  .welcome h2{
+    font-size:27px;
+  }
+
+  .step{
+    grid-template-columns:
+      32px
+      1fr;
+  }
+
+  .step .badge{
+    grid-column:2;
+    justify-self:start;
+  }
+
+  .qr-wrap{
+    min-height:240px;
+  }
+
+  .qr-wrap svg{
+    width:210px;
+    height:210px;
+  }
+
+}
+</style>
 </head>
 
 <body>
 
-<!-- =======================================================
-     FIRST RUN
-======================================================= -->
+<div id="welcome" class="overlay hidden">
+  <div class="welcome">
 
-<div
-  id="onboarding"
-  class="onboarding hidden"
->
-
-  <div class="onboarding-card">
-
-    <div class="onboarding-logo">
+    <div class="welcome-logo">
       XT
     </div>
 
@@ -1203,101 +841,70 @@
     </h2>
 
     <p>
-      Это ваш companion для X-Plane 12.
-      X-Plane не нужен для первого запуска:
-      сначала можно подключить Telegram и телефон,
-      а симулятор подключить позже.
+      X-Tablet можно настроить до запуска X-Plane.
+      Сначала подключите Telegram и телефон,
+      а затем запускайте симулятор.
     </p>
 
     <div class="steps">
 
       <div class="step">
-
-        <div class="step-num">
-          1
-        </div>
+        <div class="num">1</div>
 
         <div>
-          <div class="step-title">
-            Подключить Telegram
-          </div>
-
-          <div class="step-text">
-            Лицензия и ваш аккаунт будут
-            автоматически подтянуты из Telegram.
-          </div>
+          <b>Telegram</b>
+          <small>
+            Аккаунт и лицензия подтягиваются автоматически.
+          </small>
         </div>
 
-        <div
-          id="onboardingTelegramStatus"
-          class="step-status"
+        <span
+          id="welcomeTelegram"
+          class="badge"
         >
           Не подключено
-        </div>
-
+        </span>
       </div>
 
-
       <div class="step">
-
-        <div class="step-num">
-          2
-        </div>
+        <div class="num">2</div>
 
         <div>
-          <div class="step-title">
-            Подключить телефон или планшет
-          </div>
-
-          <div class="step-text">
-            Отсканируйте QR-код камерой телефона.
-            X-Tablet создаст локальное подключение.
-          </div>
+          <b>Телефон</b>
+          <small>
+            QR генерируется прямо в приложении.
+          </small>
         </div>
 
-        <div
-          id="onboardingPhoneStatus"
-          class="step-status"
-        >
-          Можно подключить
-        </div>
-
+        <span class="badge ok">
+          Готово
+        </span>
       </div>
 
-
       <div class="step">
-
-        <div class="step-num">
-          3
-        </div>
+        <div class="num">3</div>
 
         <div>
-          <div class="step-title">
-            Подключить X-Plane 12
-          </div>
-
-          <div class="step-text">
-            Не обязательно сейчас.
-            X-Tablet будет ждать симулятор
-            и автоматически подключится позже.
-          </div>
+          <b>X-Plane 12</b>
+          <small>
+            Симулятор можно запустить позже.
+          </small>
         </div>
 
-        <div
-          id="onboardingXpStatus"
-          class="step-status warn"
+        <span
+          id="welcomeXPlane"
+          class="badge"
         >
-          Пока не найден
-        </div>
-
+          Ожидание
+        </span>
       </div>
 
     </div>
 
-    <div class="onboarding-actions">
+    <div class="welcome-actions">
 
       <button
-        id="onboardingPhone"
+        id="welcomePhone"
         class="btn btn-primary"
         type="button"
       >
@@ -1305,7 +912,7 @@
       </button>
 
       <button
-        id="onboardingContinue"
+        id="welcomeClose"
         class="btn"
         type="button"
       >
@@ -1315,13 +922,8 @@
     </div>
 
   </div>
-
 </div>
 
-
-<!-- =======================================================
-     APP
-======================================================= -->
 
 <div class="app">
 
@@ -1334,46 +936,33 @@
       </div>
 
       <div>
-        <div class="brand-title">
-          X-Tablet
-        </div>
-
-        <div class="brand-sub">
-          Flight companion
-        </div>
+        <b>X-Tablet</b>
+        <small>Flight companion</small>
       </div>
 
     </div>
 
-
     <nav
-      id="sidebarNav"
+      id="nav"
       class="nav"
     ></nav>
 
-
     <div class="sidebar-status">
 
-      <div class="status-line">
+      <span
+        id="sideDot"
+        class="dot"
+      ></span>
 
-        <span
-          id="sidebarDot"
-          class="status-dot"
-        ></span>
-
-        <span
-          id="sidebarStatus"
-        >
-          Запуск приложения…
-        </span>
-
-      </div>
+      <span id="sideText">
+        Запуск…
+      </span>
 
       <div
-        id="sidebarSub"
-        class="status-small"
+        id="sideSub"
+        class="sidebar-sub"
       >
-        Проверяем X-Plane 12
+        Проверяем X-Plane
       </div>
 
     </div>
@@ -1383,7 +972,7 @@
 
   <main class="main">
 
-    <div class="topbar">
+    <div class="top">
 
       <div>
 
@@ -1392,20 +981,19 @@
         </div>
 
         <h1
-          id="pageTitle"
-          class="page-title"
+          id="title"
+          class="title"
         >
           Главная
         </h1>
 
       </div>
 
-
       <div class="top-actions">
 
         <button
-          id="phoneTopButton"
-          class="btn"
+          id="phoneButton"
+          class="btn btn-primary"
           type="button"
         >
           📱 Подключить телефон
@@ -1413,20 +1001,17 @@
 
         <button
           id="refreshButton"
-          class="btn btn-primary"
+          class="btn"
           type="button"
         >
-          ↻
+          ↻ Обновить
         </button>
 
       </div>
 
     </div>
 
-
-    <div
-      id="content"
-    ></div>
+    <div id="content"></div>
 
   </main>
 
@@ -1434,227 +1019,334 @@
 
 
 <div
-  id="mobileNav"
-  class="mobile-nav"
+  id="mobile"
+  class="mobile"
 ></div>
 
-
-<div
-  id="toast"
-></div>
-
-
-<div
-  id="modal"
-  class="hidden"
-></div>
+<div id="toast"></div>
 
 
 <script>
-'use strict';
+"use strict";
 
-/* =========================================================
-   CONFIG / TOKEN
-========================================================= */
-
-const urlParams =
+const params =
   new URLSearchParams(
     window.location.search
   );
 
-const TOKEN =
-  urlParams.get('token') ||
-  '';
+let token =
+  params.get("token") ||
+  localStorage.getItem(
+    "xt_tablet_token"
+  ) ||
+  "";
 
-const API_BASE =
-  '';
+if (token) {
+  localStorage.setItem(
+    "xt_tablet_token",
+    token
+  );
+}
+
 
 const FIRST_RUN_KEY =
-  'xt_tablet_first_run_v2';
+  "xt_tablet_first_run_v4";
+
 
 const state = {
-  page: 'home',
 
-  connected: false,
+  page:
+    "home",
 
-  xplaneVersion: '',
+  online:
+    false,
 
-  apiVersion: '',
+  xpVersion:
+    "",
 
-  localUrl: '',
+  apiVersion:
+    "",
 
-  ip: '',
+  ip:
+    "",
 
-  error: '',
+  localUrl:
+    "",
 
-  lastSeen: 0,
+  error:
+    "",
 
-  flight: {},
+  flight:
+    {},
 
-  commands: [],
+  commands:
+    [],
 
   license: {
-    activated: false,
-    plan: '',
-    expiresAt: 0,
-    licenseKey: '',
-    telegramUserId: '',
-    telegramFirstName: '',
-    telegramLastName: '',
-    telegramUsername: '',
+
+    activated:
+      false,
+
+    plan:
+      "",
+
+    expiresAt:
+      0,
+
+    licenseKey:
+      "",
+
+    telegramUserId:
+      "",
+
+    firstName:
+      "",
+
+    lastName:
+      "",
+
+    username:
+      ""
   },
 
   pairing: {
-    code: '',
-    botUrl: '',
-    qrUrl: '',
-    linked: false,
-  },
+
+    code:
+      "",
+
+    botUrl:
+      "",
+
+    linked:
+      false
+  }
+
 };
 
 
-/* =========================================================
-   NAV
-========================================================= */
-
 const NAV = [
+
   [
-    'home',
-    '⌂',
-    'Главная',
+    "home",
+    "⌂",
+    "Главная"
   ],
+
   [
-    'flight',
-    '✈',
-    'Полет',
+    "flight",
+    "✈",
+    "Полет"
   ],
+
   [
-    'account',
-    '👤',
-    'Аккаунт',
+    "account",
+    "👤",
+    "Аккаунт"
   ],
+
   [
-    'phone',
-    '📱',
-    'Телефон',
+    "phone",
+    "📱",
+    "Телефон"
   ],
+
   [
-    'commands',
-    '⌨',
-    'Команды',
+    "commands",
+    "⌨",
+    "Команды"
   ],
+
   [
-    'diagnostics',
-    '⚙',
-    'Диагностика',
-  ],
+    "diagnostics",
+    "⚙",
+    "Диагностика"
+  ]
+
 ];
 
 
-const nav =
-  document.getElementById(
-    'sidebarNav'
-  );
+const TITLES = {
+
+  home:
+    "Главная",
+
+  flight:
+    "Полет",
+
+  account:
+    "Аккаунт",
+
+  phone:
+    "Телефон",
+
+  commands:
+    "Команды",
+
+  diagnostics:
+    "Диагностика"
+
+};
 
 
-const mobileNav =
-  document.getElementById(
-    'mobileNav'
-  );
+const $ =
+  id =>
+    document.getElementById(
+      id
+    );
 
 
-function renderNavigation(){
+function escapeHtml(
+  value
+){
 
-  nav.innerHTML =
-    NAV.map(
-      item => `
-        <button
-          class="nav-btn ${
-            state.page === item[0]
-              ? 'active'
-              : ''
-          }"
-          data-page="${item[0]}"
-          type="button"
-        >
-          <span class="nav-icon">
-            ${item[1]}
-          </span>
+  return String(
+    value ?? ""
+  )
 
-          <span>
-            ${item[2]}
-          </span>
-        </button>
-      `
-    ).join('');
-
-
-  mobileNav.innerHTML =
-    NAV.slice(0,5)
-      .map(
-        item => `
-          <button
-            class="${
-              state.page === item[0]
-                ? 'active'
-                : ''
-            }"
-            data-page="${item[0]}"
-            type="button"
-          >
-            <span>${item[1]}</span>
-            <small>${item[2]}</small>
-          </button>
-        `
-      )
-      .join('');
-
-
-  document
-    .querySelectorAll(
-      '[data-page]'
+    .replaceAll(
+      "&",
+      "&amp;"
     )
-    .forEach(
-      button => {
 
-        button.addEventListener(
-          'click',
-          () => {
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
 
-            state.page =
-              button.dataset.page;
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
 
-            renderNavigation();
-            renderPage();
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
 
-          }
-        );
-
-      }
+    .replaceAll(
+      "'",
+      "&#039;"
     );
 
 }
 
 
-renderNavigation();
+function formatNumber(
+  value
+){
+
+  const number =
+    Number(
+      value
+    );
+
+  if (
+    !Number.isFinite(
+      number
+    )
+  ){
+
+    return "—";
+
+  }
+
+  return number.toLocaleString(
+    "ru-RU",
+    {
+      maximumFractionDigits:
+        0
+    }
+  );
+
+}
+
+
+function formatDate(
+  timestamp
+){
+
+  const value =
+    Number(
+      timestamp
+    );
+
+  if (
+    !Number.isFinite(
+      value
+    ) ||
+    value <= 0
+  ){
+
+    return "—";
+
+  }
+
+  return new Date(
+    value * 1000
+  ).toLocaleString(
+    "ru-RU"
+  );
+
+}
+
+
+function showToast(
+  message
+){
+
+  const toast =
+    $("toast");
+
+  toast.textContent =
+    message;
+
+  toast.classList.add(
+    "show"
+  );
+
+  clearTimeout(
+    showToast.timer
+  );
+
+  showToast.timer =
+    setTimeout(
+      () =>
+        toast.classList.remove(
+          "show"
+        ),
+      3000
+    );
+
+}
 
 
 /* =========================================================
-   HELPERS
+   API
 ========================================================= */
 
 function apiUrl(
   path
 ){
 
-  const separator =
-    path.includes('?')
-      ? '&'
-      : '?';
+  if (
+    !token
+  ){
+
+    return path;
+
+  }
 
   return (
-    `${API_BASE}${path}` +
-    `${separator}token=${encodeURIComponent(TOKEN)}`
+    path +
+    (
+      path.includes("?")
+        ? "&"
+        : "?"
+    ) +
+    "token=" +
+    encodeURIComponent(
+      token
+    )
   );
 
 }
@@ -1671,32 +1363,42 @@ async function api(
       {
         ...options,
 
+        credentials:
+          "same-origin",
+
         headers: {
-          ...(options.headers || {}),
-          'Accept':
-            'application/json',
-        },
+          Accept:
+            "application/json",
+
+          ...(options.headers ||
+            {})
+        }
       }
     );
 
 
-  if (!response.ok){
+  if (
+    !response.ok
+  ){
 
     let message =
       `HTTP ${response.status}`;
 
-    try{
+    try {
 
       const text =
         await response.text();
 
-      if (text){
+      if (
+        text
+      ){
+
         message =
           text;
+
       }
 
-    }catch{}
-
+    } catch {}
 
     throw new Error(
       message
@@ -1710,120 +1412,96 @@ async function api(
 }
 
 
-function escapeHtml(
-  value
-){
+/* =========================================================
+   NAVIGATION
+========================================================= */
 
-  return String(
-    value ?? ''
-  )
+function renderNavigation(){
 
-    .replaceAll(
-      '&',
-      '&amp;'
+  const nav =
+    $("nav");
+
+  const mobile =
+    $("mobile");
+
+
+  nav.innerHTML =
+    NAV.map(
+      item => `
+
+        <button
+          type="button"
+          data-page="${item[0]}"
+          class="${
+            state.page ===
+            item[0]
+              ? "active"
+              : ""
+          }"
+        >
+          ${item[1]}
+          ${item[2]}
+        </button>
+
+      `
+    ).join("");
+
+
+  mobile.innerHTML =
+    NAV
+      .slice(
+        0,
+        5
+      )
+      .map(
+        item => `
+
+          <button
+            type="button"
+            data-page="${item[0]}"
+            class="${
+              state.page ===
+              item[0]
+                ? "active"
+                : ""
+            }"
+          >
+
+            <span>
+              ${item[1]}
+            </span>
+
+            <small>
+              ${item[2]}
+            </small>
+
+          </button>
+
+        `
+      )
+      .join("");
+
+
+  document
+    .querySelectorAll(
+      "[data-page]"
     )
+    .forEach(
+      button => {
 
-    .replaceAll(
-      '<',
-      '&lt;'
-    )
+        button.onclick =
+          () => {
 
-    .replaceAll(
-      '>',
-      '&gt;'
-    )
+            state.page =
+              button.dataset.page;
 
-    .replaceAll(
-      '"',
-      '&quot;'
-    )
+            renderNavigation();
 
-    .replaceAll(
-      "'",
-      '&#039;'
-    );
+            renderPage();
 
-}
+          };
 
-
-function formatNumber(
-  value,
-  digits = 0
-){
-
-  const n =
-    Number(value);
-
-  if (
-    !Number.isFinite(n)
-  ){
-    return '—';
-  }
-
-  return n.toLocaleString(
-    'ru-RU',
-    {
-      maximumFractionDigits:
-        digits,
-      minimumFractionDigits:
-        digits,
-    }
-  );
-
-}
-
-
-function formatDate(
-  timestamp
-){
-
-  const n =
-    Number(timestamp);
-
-  if (
-    !Number.isFinite(n) ||
-    n <= 0
-  ){
-    return '—';
-  }
-
-  return new Date(
-    n * 1000
-  ).toLocaleString(
-    'ru-RU'
-  );
-
-}
-
-
-function showToast(
-  message
-){
-
-  const toast =
-    document.getElementById(
-      'toast'
-    );
-
-  toast.textContent =
-    message;
-
-  toast.classList.add(
-    'show'
-  );
-
-  clearTimeout(
-    showToast.timer
-  );
-
-  showToast.timer =
-    setTimeout(
-      () => {
-        toast.classList.remove(
-          'show'
-        );
-      },
-      2800
+      }
     );
 
 }
@@ -1833,79 +1511,83 @@ function showToast(
    STATUS
 ========================================================= */
 
-function updateStatusUI(){
+function updateStatus(){
 
   const dot =
-    document.getElementById(
-      'sidebarDot'
-    );
+    $("sideDot");
 
   const text =
-    document.getElementById(
-      'sidebarStatus'
-    );
+    $("sideText");
 
   const sub =
-    document.getElementById(
-      'sidebarSub'
-    );
+    $("sideSub");
 
 
   dot.className =
-    'status-dot';
+    "dot " +
+    (
+      state.online
+        ? "green"
+        : "red"
+    );
+
+
+  text.textContent =
+    state.online
+      ? "X-Plane подключён"
+      : "X-Plane не найден";
+
+
+  sub.textContent =
+    state.online
+      ? `X-Plane ${state.xpVersion || "12"}`
+      : "Можно подключить телефон без X-Plane";
+
+
+  const welcome =
+    $("welcomeXPlane");
 
 
   if (
-    state.connected
+    welcome
   ){
 
-    dot.classList.add(
-      'green'
-    );
+    welcome.textContent =
+      state.online
+        ? "Подключён"
+        : "Ожидание";
 
-    text.textContent =
-      'X-Plane подключён';
-
-    sub.textContent =
-      state.xplaneVersion
-        ? `X-Plane ${state.xplaneVersion}`
-        : 'Соединение активно';
-
-  }else{
-
-    dot.classList.add(
-      'red'
-    );
-
-    text.textContent =
-      'X-Plane не найден';
-
-    sub.textContent =
-      'Это нормально — X-Tablet можно настроить заранее.';
+    welcome.className =
+      "badge " +
+      (
+        state.online
+          ? "ok"
+          : ""
+      );
 
   }
 
 
-  const onboardingXp =
-    document.getElementById(
-      'onboardingXpStatus'
-    );
+  const telegram =
+    $("welcomeTelegram");
+
 
   if (
-    onboardingXp
+    telegram
   ){
 
-    onboardingXp.textContent =
-      state.connected
-        ? 'Подключён'
-        : 'Пока не найден';
+    telegram.textContent =
+      state.license.activated
+        ? "Подключено"
+        : "Не подключено";
 
-    onboardingXp.className =
-      `step-status ${
-        state.connected
-          ? 'ok'
-          : 'warn'
-      }`;
+    telegram.className =
+      "badge " +
+      (
+        state.license.activated
+          ? "ok"
+          : ""
+      );
 
   }
 
@@ -1913,48 +1595,43 @@ function updateStatusUI(){
 
 
 /* =========================================================
-   STATUS API
+   LOAD STATUS
 ========================================================= */
 
 async function loadStatus(){
 
-  try{
+  try {
 
     const response =
       await api(
-        '/api/status'
+        "/api/status"
       );
+
 
     const data =
       await response.json();
 
 
-    state.connected =
+    state.online =
       Boolean(
         data.online
       );
 
-    state.xplaneVersion =
+    state.xpVersion =
       data.xp_version ||
-      '';
+      "";
 
     state.apiVersion =
       data.api_version ||
-      '';
-
-    state.localUrl =
-      data.local_url ||
-      '';
+      "";
 
     state.ip =
       data.ip ||
-      '';
+      "";
 
-    state.lastSeen =
-      Number(
-        data.last_seen ||
-        0
-      );
+    state.localUrl =
+      data.local_url ||
+      "";
 
     state.flight =
       data.flight ||
@@ -1962,12 +1639,14 @@ async function loadStatus(){
 
     state.error =
       data.error ||
-      '';
+      "";
 
 
-  }catch(error){
+  } catch (
+    error
+  ){
 
-    state.connected =
+    state.online =
       false;
 
     state.error =
@@ -1976,146 +1655,9 @@ async function loadStatus(){
   }
 
 
-  updateStatusUI();
-
-  if (
-    state.page !==
-    'home'
-  ){
-    renderPage();
-  }
+  updateStatus();
 
 }
-
-
-loadStatus();
-
-setInterval(
-  loadStatus,
-  2500
-);
-
-
-/* =========================================================
-   SSE
-========================================================= */
-
-function connectEvents(){
-
-  if (
-    !TOKEN
-  ){
-    return;
-  }
-
-
-  const events =
-    new EventSource(
-      apiUrl(
-        '/events'
-      )
-    );
-
-
-  events.onmessage =
-    event => {
-
-      try{
-
-        const payload =
-          JSON.parse(
-            event.data
-          );
-
-
-        if (
-          payload.type ===
-          'status'
-        ){
-
-          const data =
-            payload.data ||
-            {};
-
-
-          state.connected =
-            Boolean(
-              data.online
-            );
-
-          state.xplaneVersion =
-            data.xp_version ||
-            '';
-
-          state.apiVersion =
-            data.api_version ||
-            '';
-
-          state.localUrl =
-            data.local_url ||
-            '';
-
-          state.ip =
-            data.ip ||
-            '';
-
-          state.lastSeen =
-            Number(
-              data.last_seen ||
-              0
-            );
-
-          state.flight =
-            data.flight ||
-            {};
-
-          state.error =
-            data.error ||
-            '';
-
-
-          updateStatusUI();
-
-          renderPage();
-
-        }
-
-
-        if (
-          payload.type ===
-          'commands'
-        ){
-
-          state.commands =
-            Array.isArray(
-              payload.data
-            )
-              ? payload.data
-              : [];
-
-        }
-
-      }catch{}
-
-    };
-
-
-  events.onerror =
-    () => {
-
-      events.close();
-
-      setTimeout(
-        connectEvents,
-        3000
-      );
-
-    };
-
-}
-
-
-connectEvents();
 
 
 /* =========================================================
@@ -2124,18 +1666,20 @@ connectEvents();
 
 async function loadLicense(){
 
-  try{
+  try {
 
     const response =
       await api(
-        '/api/license/status'
+        "/api/license/status"
       );
+
 
     const data =
       await response.json();
 
 
     state.license = {
+
       activated:
         Boolean(
           data.activated
@@ -2143,7 +1687,7 @@ async function loadLicense(){
 
       plan:
         data.plan ||
-        '',
+        "",
 
       expiresAt:
         Number(
@@ -2153,80 +1697,321 @@ async function loadLicense(){
 
       licenseKey:
         data.license_key ||
-        '',
+        "",
 
       telegramUserId:
         data.telegram_user_id ||
-        '',
+        "",
 
-      telegramFirstName:
+      firstName:
         data.telegram_first_name ||
-        '',
+        "",
 
-      telegramLastName:
+      lastName:
         data.telegram_last_name ||
-        '',
+        "",
 
-      telegramUsername:
+      username:
         data.telegram_username ||
-        '',
+        ""
+
     };
 
 
-  }catch{}
+  } catch {}
+
+
+  updateStatus();
 
 }
 
 
-loadLicense();
-
-setInterval(
-  loadLicense,
-  10000
-);
-
-
 /* =========================================================
-   PHONE PAIRING
+   COMMANDS
 ========================================================= */
 
-async function startPhonePairing(){
+async function loadCommands(){
 
-  /*
-   * QR-код НЕ зависит от Telegram.
-   * Сначала показываем локальный QR,
-   * затем отдельно запускаем Telegram pairing.
-   */
-
-  state.pairing.qrUrl =
-    `/api/qr?token=${encodeURIComponent(TOKEN)}`;
-
-  state.pairing.code =
-    '';
-
-  state.pairing.botUrl =
-    '';
-
-  state.pairing.linked =
-    false;
-
-  openModal('phone');
-
-
-  /*
-   * Telegram pairing запускаем отдельно.
-   * Даже если Render/Telegram временно недоступен,
-   * QR телефона всё равно должен появиться.
-   */
-
-  try{
+  try {
 
     const response =
       await api(
-        '/api/account/start',
+        "/api/commands"
+      );
+
+
+    const data =
+      await response.json();
+
+
+    state.commands =
+      Array.isArray(
+        data.data
+      )
+        ? data.data
+        : [];
+
+
+  } catch {}
+
+}
+
+
+/* =========================================================
+   QR GENERATION
+========================================================= */
+
+async function generateQrCode(){
+
+  const container =
+    $("qrContainer");
+
+
+  if (
+    !container
+  ){
+
+    return;
+
+  }
+
+
+  /*
+   * Главное:
+   * QR генерируется из LOCAL_URL прямо
+   * в браузере приложения.
+   *
+   * Нам больше не требуется успешный
+   * /api/qr для нормальной работы QR.
+   */
+
+  await loadStatus();
+
+
+  const target =
+    state.localUrl;
+
+
+  container.innerHTML =
+    `
+      <div class="qr-loading">
+        Создаём QR-код…
+      </div>
+    `;
+
+
+  if (
+    !target
+  ){
+
+    container.innerHTML =
+      `
+        <div class="qr-error">
+          Не удалось получить
+          локальный адрес X-Tablet.
+          <br><br>
+          Перезапустите приложение.
+        </div>
+      `;
+
+    return;
+
+  }
+
+
+  try {
+
+    if (
+      typeof window.qrcode ===
+      "function"
+    ){
+
+      const qr =
+        window.qrcode(
+          0,
+          "M"
+        );
+
+
+      qr.addData(
+        target,
+        "Byte"
+      );
+
+
+      qr.make();
+
+
+      container.innerHTML =
+        qr.createSvgTag(
+          6,
+          4
+        );
+
+
+      const svg =
+        container.querySelector(
+          "svg"
+        );
+
+
+      if (
+        svg
+      ){
+
+        svg.setAttribute(
+          "role",
+          "img"
+        );
+
+        svg.setAttribute(
+          "aria-label",
+          "QR-код X-Tablet"
+        );
+
+      }
+
+
+      return;
+
+    }
+
+
+    /*
+     * Резерв:
+     * серверный QR.
+     */
+
+    const response =
+      await api(
+        "/api/qr"
+      );
+
+
+    const blob =
+      await response.blob();
+
+
+    if (
+      !blob.size
+    ){
+
+      throw new Error(
+        "сервер вернул пустой QR"
+      );
+
+    }
+
+
+    const imageUrl =
+      URL.createObjectURL(
+        blob
+      );
+
+
+    container.innerHTML =
+      `
+        <img
+          src="${imageUrl}"
+          alt="QR-код X-Tablet"
+          style="
+            width:270px;
+            height:270px;
+            background:white;
+          "
+        >
+      `;
+
+
+  } catch (
+    error
+  ){
+
+    container.innerHTML =
+      `
+        <div class="qr-error">
+
+          QR-код не удалось
+          автоматически создать.
+
+          <br><br>
+
+          ${escapeHtml(
+            error.message
+          )}
+
+          <br><br>
+
+          Используйте адрес ниже
+          или скопируйте его на телефон.
+
+        </div>
+      `;
+
+
+    showToast(
+      "QR не создан: " +
+      error.message
+    );
+
+  }
+
+
+  const address =
+    $("phoneAddress");
+
+
+  if (
+    address
+  ){
+
+    address.textContent =
+      target;
+
+  }
+
+}
+
+
+/* =========================================================
+   TELEGRAM PAIRING
+========================================================= */
+
+let pairTimer =
+  null;
+
+
+async function startPairing(){
+
+  state.page =
+    "phone";
+
+
+  renderNavigation();
+
+  renderPage();
+
+
+  /*
+   * Сначала создаём QR.
+   * Telegram здесь НЕ является блокирующим этапом.
+   */
+
+  await generateQrCode();
+
+
+  /*
+   * Теперь запускаем Telegram pairing.
+   */
+
+  try {
+
+    const response =
+      await api(
+        "/api/account/start",
         {
           method:
-            'POST',
+            "POST"
         }
       );
 
@@ -2237,69 +2022,93 @@ async function startPhonePairing(){
 
     state.pairing.code =
       data.code ||
-      '';
+      "";
 
     state.pairing.botUrl =
       data.bot_url ||
       data.botUrl ||
-      '';
+      "";
 
 
-    renderPhone();
+    if (
+      state.pairing.botUrl
+    ){
+
+      const telegramButton =
+        $("telegramButton");
+
+      if (
+        telegramButton
+      ){
+
+        telegramButton.classList.remove(
+          "hidden"
+        );
+
+      }
+
+    }
 
 
     if (
       state.pairing.code
     ){
 
-      pollPhonePairing();
+      pollPairing();
 
     }
 
 
-  }catch(error){
+    renderPage();
+
+
+  } catch (
+    error
+  ){
 
     /*
-     * Не ломаем QR из-за Telegram.
+     * Даже если Telegram сейчас
+     * недоступен, QR должен продолжать
+     * работать.
      */
 
     showToast(
-      'QR готов. Telegram пока не подключён.'
+      "QR готов. Telegram пока не подключён."
     );
-
-    renderPhone();
 
   }
 
 }
 
 
-let pairingPolling = null;
-
-
-async function pollPhonePairing(){
+async function pollPairing(){
 
   clearInterval(
-    pairingPolling
+    pairTimer
   );
 
 
   if (
     !state.pairing.code
   ){
+
     return;
+
   }
 
 
-  pairingPolling =
+  pairTimer =
     setInterval(
       async () => {
 
-        try{
+        try {
 
           const response =
             await api(
-              `/api/account/poll?code=${encodeURIComponent(state.pairing.code)}`
+              "/api/account/poll?code=" +
+              encodeURIComponent(
+                state.pairing.code
+              )
             );
 
 
@@ -2314,62 +2123,57 @@ async function pollPhonePairing(){
             state.pairing.linked =
               true;
 
-            state.license =
-              {
-                ...state.license,
 
-                telegramUserId:
-                  data.telegram_user_id ||
-                  '',
+            state.license.activated =
+              Boolean(
+                data.activated ||
+                state.license.activated
+              );
 
-                telegramFirstName:
-                  data.first_name ||
-                  '',
+            state.license.telegramUserId =
+              data.telegram_user_id ||
+              state.license.telegramUserId;
 
-                telegramLastName:
-                  data.last_name ||
-                  '',
+            state.license.firstName =
+              data.first_name ||
+              state.license.firstName;
 
-                telegramUsername:
-                  data.username ||
-                  '',
+            state.license.lastName =
+              data.last_name ||
+              state.license.lastName;
 
-                plan:
-                  data.plan ||
-                  state.license.plan,
+            state.license.username =
+              data.username ||
+              state.license.username;
 
-                expiresAt:
-                  Number(
-                    data.expires_at ||
-                    state.license.expiresAt
-                  ),
+            state.license.plan =
+              data.plan ||
+              state.license.plan;
 
-                activated:
-                  Boolean(
-                    data.activated ||
-                    state.license.activated
-                  ),
-              };
+            state.license.expiresAt =
+              Number(
+                data.expires_at ||
+                state.license.expiresAt
+              );
 
 
             clearInterval(
-              pairingPolling
+              pairTimer
             );
 
-
-            renderPhone();
-
-            closeModal();
 
             showToast(
-              '✅ Telegram подключён'
+              "✅ Telegram подключён"
             );
+
 
             renderPage();
 
+            updateStatus();
+
           }
 
-        }catch{}
+        } catch {}
 
       },
       1800
@@ -2378,258 +2182,84 @@ async function pollPhonePairing(){
 }
 
 
-async function claimPhone(){
-
-  if (
-    !state.pairing.code
-  ){
-    return;
-  }
-
-
-  try{
-
-    await api(
-      '/api/account/claim',
-      {
-        method:
-          'POST',
-
-        headers:{
-          'Content-Type':
-            'application/json',
-        },
-
-        body:
-          JSON.stringify({
-            code:
-              state.pairing.code,
-          }),
-      }
-    );
-
-
-    showToast(
-      '✅ Телефон подключён'
-    );
-
-  }catch(error){
-
-    showToast(
-      error.message
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   COMMANDS
-========================================================= */
-
-async function loadCommands(){
-
-  try{
-
-    const response =
-      await api(
-        '/api/commands'
-      );
-
-    const data =
-      await response.json();
-
-
-    state.commands =
-      Array.isArray(
-        data.data
-      )
-        ? data.data
-        : [];
-
-  }catch{}
-
-}
-
-
-loadCommands();
-
-
-async function activateCommand(
-  command
-){
-
-  try{
-
-    await api(
-      '/api/commands/activate',
-      {
-        method:
-          'POST',
-
-        headers:{
-          'Content-Type':
-            'application/json',
-        },
-
-        body:
-          JSON.stringify({
-            name:
-              command.name,
-
-            duration:
-              0.15,
-          }),
-      }
-    );
-
-
-    showToast(
-      `✅ ${command.name}`
-    );
-
-  }catch(error){
-
-    showToast(
-      `Команда недоступна: ${error.message}`
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   PAGE TITLE
-========================================================= */
-
-const TITLES = {
-
-  home:
-    'Главная',
-
-  flight:
-    'Полет',
-
-  account:
-    'Аккаунт',
-
-  phone:
-    'Телефон',
-
-  commands:
-    'Команды',
-
-  diagnostics:
-    'Диагностика',
-
-};
-
-
 /* =========================================================
    PAGE RENDER
 ========================================================= */
 
 function renderPage(){
 
-  document.getElementById(
-    'pageTitle'
-  ).textContent =
+  $("title").textContent =
     TITLES[
       state.page
     ] ||
-    'X-Tablet';
+    "X-Tablet";
 
 
-  const content =
-    document.getElementById(
-      'content'
-    );
+  let html =
+    "";
 
 
   if (
     state.page ===
-    'home'
+    "home"
   ){
 
-    content.innerHTML =
+    html =
       renderHome();
 
-    bindHome();
-
-    return;
-
   }
-
-
-  if (
+  else if (
     state.page ===
-    'flight'
+    "flight"
   ){
 
-    content.innerHTML =
+    html =
       renderFlight();
 
-    return;
-
   }
-
-
-  if (
+  else if (
     state.page ===
-    'account'
+    "account"
   ){
 
-    content.innerHTML =
+    html =
       renderAccount();
 
-    return;
-
   }
-
-
-  if (
+  else if (
     state.page ===
-    'phone'
+    "phone"
   ){
 
-    content.innerHTML =
-      renderPhonePage();
-
-    bindPhonePage();
-
-    return;
+    html =
+      renderPhone();
 
   }
-
-
-  if (
+  else if (
     state.page ===
-    'commands'
+    "commands"
   ){
 
-    content.innerHTML =
+    html =
       renderCommands();
 
-    bindCommands();
-
-    return;
-
   }
-
-
-  if (
+  else if (
     state.page ===
-    'diagnostics'
+    "diagnostics"
   ){
 
-    content.innerHTML =
+    html =
       renderDiagnostics();
 
-    return;
-
   }
+
+
+  $("content").innerHTML =
+    html;
+
+
+  bindPage();
 
 }
 
@@ -2640,7 +2270,7 @@ function renderPage(){
 
 function renderHome(){
 
-  const l =
+  const license =
     state.license;
 
 
@@ -2648,21 +2278,20 @@ function renderHome(){
 
     <div class="grid">
 
-      <section class="card hero-card">
+      <section class="card hero">
 
         <div class="eyebrow">
           X-TABLET
         </div>
 
-        <h2 class="hero-title">
+        <h2>
           Ваш второй cockpit.
         </h2>
 
-        <p class="hero-text">
-          X-Tablet работает даже без запущенного
-          X-Plane. Сначала подключите Telegram
-          и телефон, а затем запускайте симулятор —
-          приложение подключится автоматически.
+        <p>
+          X-Tablet запускается независимо от X-Plane.
+          Подключите Telegram и телефон заранее,
+          а затем просто запустите симулятор.
         </p>
 
       </section>
@@ -2670,32 +2299,42 @@ function renderHome(){
 
       <section class="card">
 
-        <div class="status-box">
+        <div class="status">
 
           <div
-            class="big-dot ${
-              state.connected
-                ? 'green'
-                : 'red'
-            }"
+            class="
+              status-dot
+              ${
+                state.online
+                  ? "online"
+                  : ""
+              }
+            "
           ></div>
 
           <div>
 
-            <div class="status-main">
+            <div class="status-title">
+
               ${
-                state.connected
-                  ? 'X-Plane подключён'
-                  : 'X-Plane пока не найден'
+                state.online
+                  ? "X-Plane подключён"
+                  : "X-Plane пока не найден"
               }
+
             </div>
 
             <div class="status-sub">
+
               ${
-                state.connected
-                  ? `X-Plane ${escapeHtml(state.xplaneVersion || '12')}`
-                  : 'Это нормально. Можно настроить приложение заранее.'
+                state.online
+                  ? `X-Plane ${escapeHtml(
+                      state.xpVersion ||
+                      "12"
+                    )}`
+                  : "Это нормально. Можно подключить телефон без X-Plane."
               }
+
             </div>
 
           </div>
@@ -2707,84 +2346,86 @@ function renderHome(){
 
       <section class="card">
 
-        <h2 class="section-title">
-          Ваш аккаунт
-        </h2>
+        <h3>
+          Аккаунт
+        </h3>
 
         ${
-          l.activated
+          license.activated
+
             ? `
+
               <div class="account-name">
+
                 ${
                   escapeHtml(
                     [
-                      l.telegramFirstName,
-                      l.telegramLastName
+                      license.firstName,
+                      license.lastName
                     ]
-                      .filter(Boolean)
-                      .join(' ')
+                      .filter(
+                        Boolean
+                      )
+                      .join(" ")
                   ) ||
-                  'Пользователь X-Tablet'
+                  "Пользователь"
                 }
+
               </div>
 
-              <div class="account-meta">
+              <div class="meta">
+
                 ${
-                  l.telegramUsername
-                    ? '@' +
+                  license.username
+                    ? "@" +
                       escapeHtml(
-                        l.telegramUsername
+                        license.username
                       )
-                    : 'Telegram подключён'
+                    : "Telegram подключён"
                 }
+
               </div>
 
-              <div class="info-list">
+              <div class="rows">
 
-                <div class="info-row">
-                  <span class="muted">
-                    Тариф
-                  </span>
-
+                <div class="row">
+                  <span>Тариф</span>
                   <b>
-                    ${
-                      escapeHtml(
-                        l.plan ||
-                        '—'
-                      )
-                    }
+                    ${escapeHtml(
+                      license.plan ||
+                      "—"
+                    )}
                   </b>
                 </div>
 
-                <div class="info-row">
-                  <span class="muted">
-                    Действует до
-                  </span>
-
+                <div class="row">
+                  <span>Действует до</span>
                   <b>
-                    ${
-                      formatDate(
-                        l.expiresAt
-                      )
-                    }
+                    ${formatDate(
+                      license.expiresAt
+                    )}
                   </b>
                 </div>
 
               </div>
+
             `
+
             : `
-              <div class="small-text">
+
+              <div class="small">
                 Telegram пока не подключён.
               </div>
 
               <button
-                id="homePhoneButton"
+                id="homePhone"
                 class="btn btn-primary"
-                style="margin-top:14px"
+                style="margin-top:13px"
                 type="button"
               >
-                📱 Подключить Telegram и телефон
+                📱 Подключить
               </button>
+
             `
         }
 
@@ -2793,135 +2434,88 @@ function renderHome(){
 
       <section class="card">
 
-        <h2 class="section-title">
-          Быстрые действия
-        </h2>
-
-        <div class="grid grid-3">
-
-          <button
-            class="btn"
-            data-page="phone"
-            type="button"
-          >
-            📱 Телефон
-          </button>
-
-          <button
-            class="btn"
-            data-page="flight"
-            type="button"
-          >
-            ✈ Полет
-          </button>
-
-          <button
-            class="btn"
-            data-page="commands"
-            type="button"
-          >
-            ⌨ Команды
-          </button>
-
-        </div>
-
-      </section>
-
-
-      <section class="card">
-
-        <h2 class="section-title">
-          Состояние системы
-        </h2>
+        <h3>
+          Система
+        </h3>
 
         <div class="stat-grid">
 
           <div class="stat">
-
-            <div class="stat-label">
+            <label>
               X-Plane
-            </div>
+            </label>
 
-            <div class="stat-value">
+            <strong>
               ${
-                state.connected
-                  ? 'ONLINE'
-                  : 'OFFLINE'
+                state.online
+                  ? "ONLINE"
+                  : "OFFLINE"
               }
-            </div>
+            </strong>
 
-            <div class="stat-note">
+            <small>
               ${
-                state.connected
-                  ? 'Соединение активно'
-                  : 'Ожидание симулятора'
+                state.online
+                  ? "Подключён"
+                  : "Ожидание"
               }
-            </div>
-
+            </small>
           </div>
 
 
           <div class="stat">
-
-            <div class="stat-label">
+            <label>
               API
-            </div>
+            </label>
 
-            <div class="stat-value">
-              ${
-                escapeHtml(
-                  state.apiVersion ||
-                  '—'
-                )
-              }
-            </div>
+            <strong>
+              ${escapeHtml(
+                state.apiVersion ||
+                "—"
+              )}
+            </strong>
 
-            <div class="stat-note">
+            <small>
               Web API
-            </div>
-
+            </small>
           </div>
 
 
           <div class="stat">
-
-            <div class="stat-label">
+            <label>
               Telegram
-            </div>
+            </label>
 
-            <div class="stat-value">
+            <strong>
               ${
-                l.activated
-                  ? 'OK'
-                  : '—'
+                license.activated
+                  ? "OK"
+                  : "—"
               }
-            </div>
+            </strong>
 
-            <div class="stat-note">
+            <small>
               Аккаунт
-            </div>
-
+            </small>
           </div>
 
 
           <div class="stat">
-
-            <div class="stat-label">
+            <label>
               Телефон
-            </div>
+            </label>
 
-            <div class="stat-value">
+            <strong>
               ${
                 state.pairing.linked
-                  ? 'OK'
-                  : 'READY'
+                  ? "OK"
+                  : "READY"
               }
-            </div>
+            </strong>
 
-            <div class="stat-note">
+            <small>
               Pairing
-            </div>
-
+            </small>
           </div>
 
         </div>
@@ -2929,32 +2523,14 @@ function renderHome(){
       </section>
 
     </div>
+
   `;
 
 }
 
 
-function bindHome(){
-
-  const button =
-    document.getElementById(
-      'homePhoneButton'
-    );
-
-  if (button){
-
-    button.addEventListener(
-      'click',
-      startPhonePairing
-    );
-
-  }
-
-}
-
-
 /* =========================================================
-   FLIGHT PAGE
+   FLIGHT
 ========================================================= */
 
 function renderFlight(){
@@ -2963,47 +2539,56 @@ function renderFlight(){
     state.flight;
 
 
-  const fields = [
+  const items = [
+
     [
-      'Скорость',
+      "Скорость",
       f.ias,
-      'kt',
+      "kt"
     ],
+
     [
-      'Высота',
+      "Высота",
       f.alt,
-      'ft',
+      "ft"
     ],
+
     [
-      'Вертикальная',
+      "Вертикальная",
       f.vs,
-      'fpm',
+      "fpm"
     ],
+
     [
-      'Курс',
+      "Курс",
       f.hdg,
-      '°',
+      "°"
     ],
+
     [
-      'Pitch',
+      "Pitch",
       f.pitch,
-      '°',
+      "°"
     ],
+
     [
-      'Bank',
+      "Bank",
       f.bank,
-      '°',
+      "°"
     ],
+
     [
-      'Ground Speed',
+      "Ground Speed",
       f.gs,
-      'kt',
+      "kt"
     ],
+
     [
-      'Fuel',
+      "Fuel",
       f.fuel,
-      '',
-    ],
+      ""
+    ]
+
   ];
 
 
@@ -3011,96 +2596,69 @@ function renderFlight(){
 
     <div class="grid">
 
-      <section class="card xp-card ${
-        state.connected
-          ? 'online'
-          : 'offline'
-      }">
+      <section class="card">
 
         <div class="eyebrow">
-          Состояние
+          CONNECTION
         </div>
 
-        <div class="xp-big">
+        <h2>
           ${
-            state.connected
-              ? 'X-Plane подключён'
-              : 'X-Plane не найден'
+            state.online
+              ? "X-Plane подключён"
+              : "X-Plane не найден"
           }
-        </div>
+        </h2>
 
-        <div class="xp-description">
-          ${
-            state.connected
-              ? 'Live-параметры поступают из X-Plane Web API.'
-              : 'Запустите X-Plane 12 позже — X-Tablet подключится автоматически.'
-          }
-        </div>
-
-        <div class="xp-actions">
+        <p class="small">
 
           ${
-            state.connected
-              ? `
-                <button
-                  class="btn btn-green"
-                  type="button"
-                  onclick="showToast('🟢 Соединение активно')"
-                >
-                  ● Соединение активно
-                </button>
-              `
-              : `
-                <button
-                  class="btn btn-primary"
-                  type="button"
-                  onclick="showToast('X-Tablet продолжает ждать X-Plane')"
-                >
-                  Проверить снова
-                </button>
-              `
+            state.online
+              ? "Live-данные поступают из X-Plane."
+              : "Запустите X-Plane позже — X-Tablet подключится автоматически."
           }
 
-        </div>
+        </p>
 
       </section>
 
 
       <section class="card">
 
-        <h2 class="section-title">
+        <h3>
           Live-параметры
-        </h2>
+        </h3>
 
         <div class="flight-grid">
 
           ${
-            fields
+            items
               .map(
-                field => `
-                  <div class="flight-value">
+                item => `
 
-                    <div class="flight-label">
-                      ${field[0]}
-                    </div>
+                  <div class="flight">
 
-                    <div class="flight-number">
-                      ${
-                        formatNumber(
-                          field[1],
-                          0
-                        )
-                      }
+                    <label>
+                      ${item[0]}
+                    </label>
 
-                      <span class="flight-unit">
-                        ${field[2]}
-                      </span>
-                    </div>
+                    <strong>
+
+                      ${formatNumber(
+                        item[1]
+                      )}
+
+                      <em>
+                        ${item[2]}
+                      </em>
+
+                    </strong>
 
                   </div>
+
                 `
               )
-              .join('')
+              .join("")
           }
 
         </div>
@@ -3108,24 +2666,25 @@ function renderFlight(){
       </section>
 
     </div>
+
   `;
 
 }
 
 
 /* =========================================================
-   ACCOUNT PAGE
+   ACCOUNT
 ========================================================= */
 
 function renderAccount(){
 
-  const l =
+  const license =
     state.license;
 
 
   return `
 
-    <div class="account">
+    <div class="account-grid">
 
       <section class="card">
 
@@ -3134,106 +2693,108 @@ function renderAccount(){
         </div>
 
         ${
-          l.activated
+          license.activated
+
             ? `
+
               <div class="account-name">
 
                 ${
                   escapeHtml(
                     [
-                      l.telegramFirstName,
-                      l.telegramLastName
+                      license.firstName,
+                      license.lastName
                     ]
-                      .filter(Boolean)
-                      .join(' ')
+                      .filter(
+                        Boolean
+                      )
+                      .join(" ")
                   ) ||
-                  'Аккаунт подключён'
+                  "Аккаунт"
                 }
 
               </div>
 
-              <div class="account-meta">
+              <div class="meta">
 
                 ${
-                  l.telegramUsername
-                    ? '@' +
+                  license.username
+                    ? "@" +
                       escapeHtml(
-                        l.telegramUsername
+                        license.username
                       )
-                    : 'Telegram'
+                    : "Telegram подключён"
                 }
 
               </div>
 
               ${
-                l.licenseKey
+                license.licenseKey
+
                   ? `
+
                     <div class="license-key">
+
                       ${escapeHtml(
-                        l.licenseKey
+                        license.licenseKey
                       )}
+
                     </div>
+
                   `
-                  : ''
+
+                  : ""
               }
 
-              <div class="info-list">
+              <div class="rows">
 
-                <div class="info-row">
-                  <span class="muted">
-                    Тариф
-                  </span>
-
+                <div class="row">
+                  <span>Тариф</span>
                   <b>
                     ${escapeHtml(
-                      l.plan ||
-                      '—'
+                      license.plan ||
+                      "—"
                     )}
                   </b>
                 </div>
 
-
-                <div class="info-row">
-                  <span class="muted">
-                    Действует до
-                  </span>
-
+                <div class="row">
+                  <span>До</span>
                   <b>
                     ${formatDate(
-                      l.expiresAt
+                      license.expiresAt
                     )}
                   </b>
                 </div>
 
-
-                <div class="info-row">
-                  <span class="muted">
-                    Telegram ID
-                  </span>
-
+                <div class="row">
+                  <span>Telegram ID</span>
                   <b>
                     ${escapeHtml(
-                      l.telegramUserId ||
-                      '—'
+                      license.telegramUserId ||
+                      "—"
                     )}
                   </b>
                 </div>
 
               </div>
+
             `
+
             : `
-              <div class="small-text">
-                Аккаунт Telegram ещё не подключён.
-              </div>
+
+              <p class="small">
+                Telegram ещё не подключён.
+              </p>
 
               <button
                 class="btn btn-primary"
-                style="margin-top:15px"
+                onclick="startPairing()"
                 type="button"
-                onclick="startPhonePairing()"
               >
                 🔗 Подключить
               </button>
+
             `
         }
 
@@ -3242,59 +2803,35 @@ function renderAccount(){
 
       <section class="card">
 
-        <h2 class="section-title">
+        <h3>
           Устройство
-        </h2>
+        </h3>
 
-        <p class="small-text">
-          X-Tablet автоматически создаёт уникальный
-          идентификатор устройства и хранит его
-          локально на этом компьютере.
+        <p class="small">
+          X-Tablet автоматически создаёт
+          идентификатор устройства.
+          Пользователю не требуется вводить
+          команды в консоли.
         </p>
-
-        <div class="info-list">
-
-          <div class="info-row">
-
-            <span class="muted">
-              Состояние
-            </span>
-
-            <b>
-              ${
-                l.activated
-                  ? 'Готово'
-                  : 'Ожидает аккаунт'
-              }
-            </b>
-
-          </div>
-
-        </div>
 
       </section>
 
     </div>
+
   `;
 
 }
 
 
 /* =========================================================
-   PHONE PAGE
+   PHONE
 ========================================================= */
 
-function renderPhonePage(){
-
-  const linked =
-    Boolean(
-      state.pairing.linked
-    );
-
+function renderPhone(){
 
   return `
 
-    <div class="grid">
+    <div class="phone-grid">
 
       <section class="card">
 
@@ -3302,151 +2839,185 @@ function renderPhonePage(){
           SECOND SCREEN
         </div>
 
-        <h2 class="section-title">
+        <h2>
           Телефон или планшет
         </h2>
 
-        <p class="small-text">
-          X-Tablet может работать как второй экран.
-          Вам не нужен X-Plane для самого подключения.
+        <p class="small">
+          X-Plane для подключения телефона
+          не нужен.
         </p>
 
 
-        <div class="pair-steps">
+        <div class="steps">
 
-          <div class="pair-step">
+          <div class="step">
 
-            <div class="pair-num">
+            <div class="num">
               1
             </div>
 
             <div>
-
               <b>
-                Запустите подключение
+                Создать подключение
               </b>
 
-              <div class="small-text">
-                Нажмите кнопку ниже и получите QR-код.
-              </div>
-
+              <small>
+                Нажмите кнопку ниже.
+              </small>
             </div>
+
+            <span class="badge">
+              Готово
+            </span>
 
           </div>
 
 
-          <div class="pair-step">
+          <div class="step">
 
-            <div class="pair-num">
+            <div class="num">
               2
             </div>
 
             <div>
-
               <b>
-                Откройте Telegram
+                Подключить Telegram
               </b>
 
-              <div class="small-text">
-                Подтвердите подключение аккаунта.
-              </div>
-
+              <small>
+                Подтвердите аккаунт через бота.
+              </small>
             </div>
+
+            <span
+              class="badge ${
+                state.pairing.linked
+                  ? "ok"
+                  : ""
+              }"
+            >
+              ${
+                state.pairing.linked
+                  ? "Подключено"
+                  : "Ожидание"
+              }
+            </span>
 
           </div>
 
 
-          <div class="pair-step">
+          <div class="step">
 
-            <div class="pair-num">
+            <div class="num">
               3
             </div>
 
             <div>
-
               <b>
-                Отсканируйте QR
+                Сканировать QR
               </b>
 
-              <div class="small-text">
-                Камера телефона откроет локальный интерфейс X-Tablet.
-              </div>
-
+              <small>
+                Камера телефона откроет
+                локальный интерфейс.
+              </small>
             </div>
+
+            <span class="badge">
+              Локально
+            </span>
 
           </div>
 
+        </div>
+
+
+        <div
+          style="
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+            margin-top:16px;
+          "
+        >
+
+          <button
+            id="pairButton"
+            class="btn btn-primary"
+            type="button"
+          >
+            📱 Создать QR
+          </button>
+
+
+          <button
+            id="telegramButton"
+            class="btn hidden"
+            type="button"
+          >
+            ✈ Открыть Telegram
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <section class="card qr-card">
+
+        <h3>
+          Подключение телефона
+        </h3>
+
+        <div
+          id="qrContainer"
+          class="qr-wrap"
+        >
+
+          <div class="qr-loading">
+            Нажмите «Создать QR».
+          </div>
+
+        </div>
+
+
+        <div
+          style="
+            margin-top:10px;
+            color:var(--muted);
+            font-size:10px;
+          "
+        >
+          Адрес телефона
+        </div>
+
+
+        <div
+          id="phoneAddress"
+          class="address"
+        >
+          —
         </div>
 
 
         <button
-          id="phoneStartButton"
-          class="btn btn-primary"
-          style="margin-top:17px"
+          id="copyAddress"
+          class="btn"
+          style="
+            width:100%;
+            margin-top:8px;
+          "
           type="button"
         >
-          📱 ${
-            linked
-              ? 'Переподключить телефон'
-              : 'Подключить телефон'
-          }
+          📋 Копировать адрес
         </button>
 
       </section>
 
-
-      <section class="card">
-
-        <div class="status-box">
-
-          <div
-            class="big-dot ${
-              linked
-                ? 'green'
-                : ''
-            }"
-          ></div>
-
-          <div>
-
-            <div class="status-main">
-              ${
-                linked
-                  ? 'Телефон подключён'
-                  : 'Телефон ещё не подключён'
-              }
-            </div>
-
-            <div class="status-sub">
-              ${
-                linked
-                  ? 'Pairing завершён'
-                  : 'Нажмите «Подключить телефон»'
-              }
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
     </div>
+
   `;
-
-}
-
-
-function bindPhonePage(){
-
-  document
-    .getElementById(
-      'phoneStartButton'
-    )
-    ?.addEventListener(
-      'click',
-      startPhonePairing
-    );
 
 }
 
@@ -3457,37 +3028,27 @@ function bindPhonePage(){
 
 function renderCommands(){
 
-  const commands =
-    state.commands;
-
-
   return `
 
     <div class="grid">
 
       <section class="card">
 
-        <div
-          style="
-            display:flex;
-            justify-content:space-between;
-            gap:12px;
-            align-items:center;
-            flex-wrap:wrap;
-          "
-        >
+        <div class="command-top">
 
           <div>
 
-            <h2 class="section-title">
-              X-Plane Commands
-            </h2>
+            <h3>
+              Команды X-Plane
+            </h3>
 
-            <div class="small-text">
-              Нажатие команды отправляется прямо в X-Plane.
+            <div class="small">
+              Команды работают после подключения
+              X-Plane.
             </div>
 
           </div>
+
 
           <input
             id="commandSearch"
@@ -3511,167 +3072,8 @@ function renderCommands(){
       </section>
 
     </div>
+
   `;
-
-}
-
-
-function bindCommands(){
-
-  const search =
-    document.getElementById(
-      'commandSearch'
-    );
-
-  const container =
-    document.getElementById(
-      'commandGrid'
-    );
-
-
-  function draw(){
-
-    const query =
-      String(
-        search?.value ||
-        ''
-      )
-        .trim()
-        .toLowerCase();
-
-
-    const filtered =
-      state.commands
-        .filter(
-          command => {
-
-            const name =
-              String(
-                command.name ||
-                ''
-              )
-                .toLowerCase();
-
-            const description =
-              String(
-                command.description ||
-                ''
-              )
-                .toLowerCase();
-
-            return (
-              !query ||
-              name.includes(
-                query
-              ) ||
-              description.includes(
-                query
-              )
-            );
-
-          }
-        )
-        .slice(
-          0,
-          300
-        );
-
-
-    if (
-      !filtered.length
-    ){
-
-      container.innerHTML = `
-        <div
-          class="small-text"
-          style="grid-column:1/-1"
-        >
-          ${
-            state.connected
-              ? 'Команды пока не загружены.'
-              : 'Запустите X-Plane, чтобы загрузить команды.'
-          }
-        </div>
-      `;
-
-      return;
-
-    }
-
-
-    container.innerHTML =
-      filtered
-        .map(
-          command => `
-
-            <button
-              class="command"
-              type="button"
-              data-command="${encodeURIComponent(
-                command.name ||
-                ''
-              )}"
-            >
-
-              <span class="command-name">
-                ${escapeHtml(
-                  command.name ||
-                  'Unknown command'
-                )}
-              </span>
-
-              <span class="command-sub">
-                ${escapeHtml(
-                  command.description ||
-                  'X-Plane Command'
-                )}
-              </span>
-
-            </button>
-          `
-        )
-        .join('');
-
-
-    container
-      .querySelectorAll(
-        '[data-command]'
-      )
-      .forEach(
-        button => {
-
-          button.addEventListener(
-            'click',
-            () => {
-
-              const name =
-                decodeURIComponent(
-                  button.dataset.command
-                );
-
-
-              activateCommand(
-                {
-                  name,
-                }
-              );
-
-            }
-          );
-
-        }
-      );
-
-  }
-
-
-  search?.addEventListener(
-    'input',
-    draw
-  );
-
-
-  draw();
 
 }
 
@@ -3680,157 +3082,121 @@ function bindCommands(){
    DIAGNOSTICS
 ========================================================= */
 
-async function renderDiagnostics(){
+function renderDiagnostics(){
 
-  let data = null;
-
-
-  try{
-
-    const response =
-      await api(
-        '/api/diagnostics'
-      );
-
-    data =
-      await response.json();
-
-  }catch(error){
-
-    data = {
-      error:
-        error.message,
-    };
-
-  }
-
-
-  const uptime =
-    Number(
-      data?.uptime_seconds ||
-      0
-    );
-
-
-  document.getElementById(
-    'content'
-  ).innerHTML = `
+  return `
 
     <div class="grid">
 
       <section class="card">
 
-        <h2 class="section-title">
+        <h3>
           Диагностика
-        </h2>
+        </h3>
 
-        <div class="small-text">
-          Здесь отображается техническое состояние
-          приложения. Эти данные нужны в основном
-          для поддержки.
-        </div>
+        <p class="small">
+          ${
+            escapeHtml(
+              state.error ||
+              "Ошибок нет"
+            )
+          }
+        </p>
 
       </section>
 
 
-      <section class="diag-grid">
+      <section class="card">
 
-        <div class="diag">
+        <div class="stat-grid">
 
-          <div class="diag-label">
-            Приложение
-          </div>
+          <div class="stat">
 
-          <div class="diag-value">
-            X-Tablet
-          </div>
+            <label>
+              IP
+            </label>
 
-        </div>
-
-
-        <div class="diag">
-
-          <div class="diag-label">
-            Uptime
-          </div>
-
-          <div class="diag-value">
-            ${formatNumber(
-              uptime,
-              0
-            )} с
-          </div>
-
-        </div>
-
-
-        <div class="diag">
-
-          <div class="diag-label">
-            X-Plane
-          </div>
-
-          <div class="diag-value">
-            ${
-              state.connected
-                ? 'ONLINE'
-                : 'OFFLINE'
-            }
-          </div>
-
-        </div>
-
-
-        <div class="diag">
-
-          <div class="diag-label">
-            X-Plane API
-          </div>
-
-          <div class="diag-value">
-            ${
-              escapeHtml(
-                state.apiVersion ||
-                '—'
-              )
-            }
-          </div>
-
-        </div>
-
-
-        <div class="diag">
-
-          <div class="diag-label">
-            Local IP
-          </div>
-
-          <div class="diag-value">
-            ${
-              escapeHtml(
+            <strong
+              style="
+                font-size:15px;
+              "
+            >
+              ${escapeHtml(
                 state.ip ||
-                '—'
-              )
-            }
+                "—"
+              )}
+            </strong>
+
+            <small>
+              локальная сеть
+            </small>
+
           </div>
 
-        </div>
 
+          <div class="stat">
 
-        <div class="diag">
+            <label>
+              API
+            </label>
 
-          <div class="diag-label">
-            Ошибка
+            <strong>
+              ${escapeHtml(
+                state.apiVersion ||
+                "—"
+              )}
+            </strong>
+
+            <small>
+              X-Plane
+            </small>
+
           </div>
 
-          <div class="diag-value">
-            ${
-              escapeHtml(
-                data?.error ||
-                state.error ||
-                'Нет'
-              )
-            }
+
+          <div class="stat">
+
+            <label>
+              Телефон
+            </label>
+
+            <strong
+              style="
+                font-size:13px;
+              "
+            >
+              ${
+                state.localUrl
+                  ? "READY"
+                  : "—"
+              }
+            </strong>
+
+            <small>
+              локальный URL
+            </small>
+
+          </div>
+
+
+          <div class="stat">
+
+            <label>
+              Статус
+            </label>
+
+            <strong>
+              ${
+                state.online
+                  ? "OK"
+                  : "WAIT"
+              }
+            </strong>
+
+            <small>
+              X-Plane
+            </small>
+
           </div>
 
         </div>
@@ -3838,371 +3204,385 @@ async function renderDiagnostics(){
       </section>
 
     </div>
+
   `;
 
 }
 
 
 /* =========================================================
-   MODALS
+   PAGE BINDING
 ========================================================= */
 
-function openModal(
-  type
-){
+function bindPage(){
 
-  const modal =
-    document.getElementById(
-      'modal'
+  $("homePhone")
+    ?.addEventListener(
+      "click",
+      startPairing
     );
 
 
-  if (
-    type ===
-    'phone'
-  ){
-
-    modal.innerHTML = `
-
-      <div class="modal-backdrop">
-
-        <div class="modal">
-
-          <div class="modal-header">
-
-            <div>
-
-              <div class="eyebrow">
-                PHONE PAIRING
-              </div>
-
-              <h2 class="modal-title">
-                Подключение телефона
-              </h2>
-
-            </div>
-
-            <button
-              class="modal-close"
-              id="modalClose"
-              type="button"
-            >
-              ×
-            </button>
-
-          </div>
-
-
-          <div
-            style="
-              margin-top:14px;
-              color:var(--muted);
-              font-size:12px;
-              line-height:1.6;
-            "
-          >
-            Никаких команд и терминала.
-            Отсканируйте QR-код с телефона.
-          </div>
-
-
-          <div
-            style="
-              display:grid;
-              place-items:center;
-              margin-top:18px;
-            "
-          >
-
-            ${
-              state.pairing.qrUrl
-                ? `
-                  <img
-                    class="qr-image"
-                    src="${state.pairing.qrUrl}"
-                    alt="QR"
-                  >
-                `
-                : `
-                  <div
-                    class="small-text"
-                  >
-                    QR-код пока не создан.
-                  </div>
-                `
-            }
-
-          </div>
-
-
-          <div
-            style="
-              margin-top:14px;
-              text-align:center;
-            "
-          >
-
-            <div class="small-text">
-              Откройте на телефоне:
-            </div>
-
-            <div class="pair-url">
-              ${
-                escapeHtml(
-                  state.localUrl ||
-                  'Локальный адрес появится после запуска.'
-                )
-              }
-            </div>
-
-          </div>
-
-
-          <div
-            id="pairWaiting"
-            class="waiting"
-            style="text-align:center"
-          >
-            ${
-              state.pairing.linked
-                ? '✅ Подключение завершено'
-                : 'Ожидаем подтверждение…'
-            }
-          </div>
-
-
-          ${
-            state.pairing.botUrl
-              ? `
-                <button
-                  class="btn btn-primary"
-                  style="width:100%;margin-top:15px"
-                  id="openTelegramLink"
-                  type="button"
-                >
-                  ✈ Открыть Telegram
-                </button>
-              `
-              : ''
-          }
-
-        </div>
-
-      </div>
-    `;
-
-
-    modal.classList.remove(
-      'hidden'
+  $("pairButton")
+    ?.addEventListener(
+      "click",
+      startPairing
     );
 
 
-    document
-      .getElementById(
-        'modalClose'
-      )
-      ?.addEventListener(
-        'click',
-        closeModal
-      );
+  $("telegramButton")
+    ?.addEventListener(
+      "click",
+      () => {
 
-
-    document
-      .getElementById(
-        'openTelegramLink'
-      )
-      ?.addEventListener(
-        'click',
-        () => {
+        if (
+          state.pairing.botUrl
+        ){
 
           window.open(
             state.pairing.botUrl,
-            '_blank'
+            "_blank",
+            "noopener"
           );
 
         }
-      );
 
-    return;
-  }
-
-}
-
-
-function closeModal(){
-
-  clearInterval(
-    pairingPolling
-  );
-
-  const modal =
-    document.getElementById(
-      'modal'
+      }
     );
 
-  modal.classList.add(
-    'hidden'
-  );
 
-  modal.innerHTML =
-    '';
+  $("copyAddress")
+    ?.addEventListener(
+      "click",
+      async () => {
 
-}
+        if (
+          !state.localUrl
+        ){
 
+          showToast(
+            "Локальный адрес ещё не готов."
+          );
 
-/* =========================================================
-   FIRST RUN
-========================================================= */
+          return;
 
-function shouldShowOnboarding(){
-
-  return (
-    localStorage.getItem(
-      FIRST_RUN_KEY
-    ) !==
-    '1'
-  );
-
-}
+        }
 
 
-function openOnboarding(){
+        try {
 
-  const element =
-    document.getElementById(
-      'onboarding'
+          await navigator.clipboard.writeText(
+            state.localUrl
+          );
+
+          showToast(
+            "✅ Адрес скопирован"
+          );
+
+        } catch {
+
+          showToast(
+            "Скопируйте адрес вручную."
+          );
+
+        }
+
+      }
     );
 
-  if (!element){
-    return;
-  }
-
-
-  element.classList.remove(
-    'hidden'
-  );
-
-
-  const telegram =
-    document.getElementById(
-      'onboardingTelegramStatus'
-    );
 
   if (
-    state.license.activated
+    state.page ===
+    "commands"
   ){
 
-    telegram.textContent =
-      'Подключено';
+    const input =
+      $("commandSearch");
 
-    telegram.classList.add(
-      'ok'
+    const grid =
+      $("commandGrid");
+
+
+    const draw =
+      () => {
+
+        const query =
+          String(
+            input?.value ||
+            ""
+          )
+            .trim()
+            .toLowerCase();
+
+
+        const filtered =
+          state.commands
+            .filter(
+              command => {
+
+                const name =
+                  String(
+                    command.name ||
+                    ""
+                  )
+                    .toLowerCase();
+
+
+                const description =
+                  String(
+                    command.description ||
+                    ""
+                  )
+                    .toLowerCase();
+
+
+                return (
+                  !query ||
+                  name.includes(
+                    query
+                  ) ||
+                  description.includes(
+                    query
+                  )
+                );
+
+              }
+            )
+            .slice(
+              0,
+              300
+            );
+
+
+        if (
+          !filtered.length
+        ){
+
+          grid.innerHTML =
+            `
+              <div class="small">
+                ${
+                  state.online
+                    ? "Команды пока не загружены."
+                    : "Запустите X-Plane, чтобы получить команды."
+                }
+              </div>
+            `;
+
+          return;
+
+        }
+
+
+        grid.innerHTML =
+          filtered
+            .map(
+              command => `
+
+                <button
+                  class="command"
+                  type="button"
+                  data-command="${
+                    encodeURIComponent(
+                      command.name ||
+                      ""
+                    )
+                  }"
+                >
+
+                  <b>
+                    ${escapeHtml(
+                      command.name ||
+                      "Команда"
+                    )}
+                  </b>
+
+                  <small>
+                    ${escapeHtml(
+                      command.description ||
+                      "X-Plane command"
+                    )}
+                  </small>
+
+                </button>
+
+              `
+            )
+            .join("");
+
+
+        grid
+          .querySelectorAll(
+            "[data-command]"
+          )
+          .forEach(
+            button => {
+
+              button.onclick =
+                () =>
+                  sendCommand(
+                    decodeURIComponent(
+                      button.dataset.command
+                    )
+                  );
+
+            }
+          );
+
+      };
+
+
+    input?.addEventListener(
+      "input",
+      draw
     );
+
+
+    draw();
 
   }
-
-
-  updateStatusUI();
-
-}
-
-
-function closeOnboarding(){
-
-  localStorage.setItem(
-    FIRST_RUN_KEY,
-    '1'
-  );
-
-
-  document
-    .getElementById(
-      'onboarding'
-    )
-    ?.classList.add(
-      'hidden'
-    );
 
 }
 
 
 /* =========================================================
-   GLOBAL EVENTS
+   SEND COMMAND
 ========================================================= */
 
-document
-  .getElementById(
-    'phoneTopButton'
-  )
-  ?.addEventListener(
-    'click',
-    startPhonePairing
-  );
+async function sendCommand(
+  name
+){
+
+  try {
+
+    await api(
+      "/api/commands/activate",
+      {
+        method:
+          "POST",
+
+        headers:{
+          "Content-Type":
+            "application/json"
+        },
+
+        body:
+          JSON.stringify({
+            name,
+            duration:
+              0.15
+          })
+      }
+    );
 
 
-document
-  .getElementById(
-    'refreshButton'
-  )
-  ?.addEventListener(
-    'click',
-    async () => {
+    showToast(
+      "✅ " +
+      name
+    );
 
-      await loadStatus();
-      await loadLicense();
-      await loadCommands();
+  } catch (
+    error
+  ){
 
-      showToast(
-        'Состояние обновлено'
-      );
+    showToast(
+      "Команда недоступна: " +
+      error.message
+    );
 
-    }
-  );
+  }
 
-
-document
-  .getElementById(
-    'onboardingPhone'
-  )
-  ?.addEventListener(
-    'click',
-    startPhonePairing
-  );
+}
 
 
-document
-  .getElementById(
-    'onboardingContinue'
-  )
-  ?.addEventListener(
-    'click',
-    closeOnboarding
-  );
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+$("phoneButton").onclick =
+  startPairing;
+
+
+$("refreshButton").onclick =
+  async () => {
+
+    await loadStatus();
+
+    await loadLicense();
+
+    await loadCommands();
+
+    renderPage();
+
+    showToast(
+      "Состояние обновлено"
+    );
+
+  };
+
+
+$("welcomePhone").onclick =
+  startPairing;
+
+
+$("welcomeClose").onclick =
+  () => {
+
+    $("welcome").classList.add(
+      "hidden"
+    );
+
+    localStorage.setItem(
+      FIRST_RUN_KEY,
+      "1"
+    );
+
+  };
 
 
 /* =========================================================
    BOOT
 ========================================================= */
 
+renderNavigation();
+
 renderPage();
 
-updateStatusUI();
+loadStatus();
+
+loadLicense();
+
+loadCommands();
 
 
-setTimeout(
-  () => {
-
-    if (
-      shouldShowOnboarding()
-    ){
-
-      openOnboarding();
-
-    }
-
-  },
-  500
+setInterval(
+  loadStatus,
+  2500
 );
+
+
+setInterval(
+  loadLicense,
+  10000
+);
+
+
+if (
+  !localStorage.getItem(
+    FIRST_RUN_KEY
+  )
+){
+
+  $("welcome")
+    .classList
+    .remove(
+      "hidden"
+    );
+
+}
+
+
+updateStatus();
 
 </script>
 
