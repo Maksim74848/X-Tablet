@@ -9,10 +9,12 @@ permissions:
   contents: write
 
 env:
-  APP_VERSION: "1.0.0"
+  APP_VERSION: "1.0.1"
 
 jobs:
+
   windows:
+    name: Windows
     runs-on: windows-latest
 
     steps:
@@ -23,35 +25,46 @@ jobs:
           go-version: "1.23.x"
           cache-dependency-path: client/go.mod
 
-      - name: Build
+      - name: Build Windows GUI
         working-directory: client
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force dist/windows | Out-Null
-          go build -trimpath -ldflags="-s -w" -o dist/windows/X-Tablet.exe .
+
+          go build `
+            -trimpath `
+            -ldflags="-s -w -H=windowsgui" `
+            -o dist/windows/X-Tablet.exe .
+
+      - name: Verify EXE
+        shell: pwsh
+        run: |
+          if (!(Test-Path "dist/windows/X-Tablet.exe")) {
+            throw "X-Tablet.exe was not created"
+          }
 
       - name: Install Inno Setup
-        run: choco install innosetup --no-progress -y
+        run: |
+          choco install innosetup --no-progress -y
 
-      - name: Installer
+      - name: Build installer
         shell: pwsh
         run: |
           & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" `
             installer/windows/X-Tablet.iss
 
-      - name: Verify
-        shell: pwsh
-        run: |
           if (!(Test-Path "installer/windows/dist/X-Tablet-Windows-Setup.exe")) {
-            throw "Windows installer not created"
+            throw "Windows installer was not created"
           }
 
       - uses: actions/upload-artifact@v4
         with:
-          name: windows
+          name: xtablet-windows
           path: installer/windows/dist/X-Tablet-Windows-Setup.exe
 
+
   linux:
+    name: Linux
     runs-on: ubuntu-latest
 
     steps:
@@ -62,19 +75,24 @@ jobs:
           go-version: "1.23.x"
           cache-dependency-path: client/go.mod
 
-      - name: Build
+      - name: Build Linux
         working-directory: client
+        shell: bash
         run: |
           mkdir -p dist/linux
 
-          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-            go build \
+          CGO_ENABLED=0 \
+          GOOS=linux \
+          GOARCH=amd64 \
+          go build \
             -trimpath \
             -ldflags="-s -w" \
             -o dist/linux/X-Tablet .
 
           chmod +x dist/linux/X-Tablet
-          cp license-server.txt dist/linux/license-server.txt
+
+          cp license-server.txt \
+            dist/linux/license-server.txt
 
           printf '%s\n' \
             'X-Tablet Linux x64' \
@@ -82,14 +100,19 @@ jobs:
             'Запустите X-Tablet через графический интерфейс.' \
             > dist/linux/README.txt
 
-          tar -C dist/linux -czf X-Tablet-Linux-x64.tar.gz .
+          tar \
+            -C dist/linux \
+            -czf X-Tablet-Linux-x64.tar.gz \
+            .
 
       - uses: actions/upload-artifact@v4
         with:
-          name: linux
+          name: xtablet-linux
           path: client/X-Tablet-Linux-x64.tar.gz
 
+
   macos:
+    name: macOS
     runs-on: macos-latest
 
     steps:
@@ -100,25 +123,31 @@ jobs:
           go-version: "1.23.x"
           cache-dependency-path: client/go.mod
 
-      - name: Build
+      - name: Build macOS Universal
         working-directory: client
+        shell: bash
         run: |
           mkdir -p dist/macos/X-Tablet.app/Contents/MacOS
           mkdir -p dist/macos/X-Tablet.app/Contents/Resources
 
-          CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 \
-            go build \
+          CGO_ENABLED=0 \
+          GOOS=darwin \
+          GOARCH=amd64 \
+          go build \
             -trimpath \
             -ldflags="-s -w" \
             -o dist/macos/X-Tablet-amd64 .
 
-          CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 \
-            go build \
+          CGO_ENABLED=0 \
+          GOOS=darwin \
+          GOARCH=arm64 \
+          go build \
             -trimpath \
             -ldflags="-s -w" \
             -o dist/macos/X-Tablet-arm64 .
 
-          lipo -create \
+          lipo \
+            -create \
             -output dist/macos/X-Tablet \
             dist/macos/X-Tablet-amd64 \
             dist/macos/X-Tablet-arm64
@@ -138,13 +167,14 @@ jobs:
             '<key>CFBundleIdentifier</key><string>com.xtablet.app</string>' \
             '<key>CFBundleName</key><string>X-Tablet</string>' \
             '<key>CFBundlePackageType</key><string>APPL</string>' \
-            '<key>CFBundleVersion</key><string>1.0.0</string>' \
-            '<key>CFBundleShortVersionString</key><string>1.0.0</string>' \
+            '<key>CFBundleVersion</key><string>1.0.1</string>' \
+            '<key>CFBundleShortVersionString</key><string>1.0.1</string>' \
             '</dict>' \
             '</plist>' \
             > dist/macos/X-Tablet.app/Contents/Info.plist
 
-          chmod +x dist/macos/X-Tablet.app/Contents/MacOS/X-Tablet
+          chmod +x \
+            dist/macos/X-Tablet.app/Contents/MacOS/X-Tablet
 
           hdiutil create \
             -volname X-Tablet \
@@ -155,65 +185,100 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: macos
+          name: xtablet-macos
           path: client/dist/X-Tablet-macOS.dmg
 
+
   publish:
-    needs: [windows, linux, macos]
+    name: Publish
+    needs:
+      - windows
+      - linux
+      - macos
+
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: windows
+          name: xtablet-windows
           path: release
 
       - uses: actions/download-artifact@v4
         with:
-          name: linux
+          name: xtablet-linux
           path: release
 
       - uses: actions/download-artifact@v4
         with:
-          name: macos
+          name: xtablet-macos
           path: release
 
-      - name: Free package
+      # Полный пакет для администратора.
+      - name: Create Admin Full package
         working-directory: release
+        shell: bash
         run: |
-          mkdir free
+          mkdir -p X-Tablet-Admin-Full
 
-          cp X-Tablet-Windows-Setup.exe free/
-          cp X-Tablet-Linux-x64.tar.gz free/
-          cp X-Tablet-macOS.dmg free/
+          cp X-Tablet-Windows-Setup.exe \
+            X-Tablet-Admin-Full/
+
+          cp X-Tablet-Linux-x64.tar.gz \
+            X-Tablet-Admin-Full/
+
+          cp X-Tablet-macOS.dmg \
+            X-Tablet-Admin-Full/
+
+          printf '%s\n' \
+            'X-Tablet Admin Full' \
+            'Полный дистрибутив X-Tablet.' \
+            'Windows + Linux x64 + macOS.' \
+            > X-Tablet-Admin-Full/README.txt
+
+          zip -r \
+            X-Tablet-Admin-Full.zip \
+            X-Tablet-Admin-Full
+
+      # Обычный публичный пакет.
+      - name: Create Free package
+        working-directory: release
+        shell: bash
+        run: |
+          mkdir -p X-Tablet-Free
+
+          cp X-Tablet-Windows-Setup.exe \
+            X-Tablet-Free/
+
+          cp X-Tablet-Linux-x64.tar.gz \
+            X-Tablet-Free/
+
+          cp X-Tablet-macOS.dmg \
+            X-Tablet-Free/
 
           printf '%s\n' \
             'X-Tablet Free' \
-            'Windows + Linux x64 + macOS' \
-            > free/README.txt
+            'Полные установочные файлы X-Tablet.' \
+            'Платные функции требуют действующей лицензии.' \
+            > X-Tablet-Free/README.txt
 
-          zip -r X-Tablet-Free.zip free
+          zip -r \
+            X-Tablet-Free.zip \
+            X-Tablet-Free
 
-      - name: Release
+      - name: Publish Release
         env:
           GH_TOKEN: ${{ github.token }}
+
         run: |
-          if gh release view "v${APP_VERSION}" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release upload "v${APP_VERSION}" \
-              release/X-Tablet-Windows-Setup.exe \
-              release/X-Tablet-Linux-x64.tar.gz \
-              release/X-Tablet-macOS.dmg \
-              release/X-Tablet-Free.zip \
-              --clobber \
-              --repo "$GITHUB_REPOSITORY"
-          else
-            gh release create "v${APP_VERSION}" \
-              release/X-Tablet-Windows-Setup.exe \
-              release/X-Tablet-Linux-x64.tar.gz \
-              release/X-Tablet-macOS.dmg \
-              release/X-Tablet-Free.zip \
-              --title "X-Tablet ${APP_VERSION}" \
-              --notes "X-Tablet release" \
-              --latest \
-              --repo "$GITHUB_REPOSITORY"
-          fi
+          gh release create \
+            "v${APP_VERSION}" \
+            release/X-Tablet-Windows-Setup.exe \
+            release/X-Tablet-Linux-x64.tar.gz \
+            release/X-Tablet-macOS.dmg \
+            release/X-Tablet-Free.zip \
+            release/X-Tablet-Admin-Full.zip \
+            --title "X-Tablet ${APP_VERSION}" \
+            --notes "X-Tablet ${APP_VERSION}" \
+            --latest \
+            --repo "$GITHUB_REPOSITORY"
