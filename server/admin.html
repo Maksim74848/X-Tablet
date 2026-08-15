@@ -2,7 +2,10 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1,viewport-fit=cover"
+>
 <title>X-Tablet — Админ-панель</title>
 
 <style>
@@ -21,12 +24,21 @@
 }
 
 *{
-  box-sizing:border-box
+  box-sizing:border-box;
+}
+
+html{
+  background:var(--bg);
 }
 
 body{
   margin:0;
   background:
+    radial-gradient(
+      circle at 15% 0%,
+      rgba(57,126,190,.14),
+      transparent 32%
+    ),
     linear-gradient(
       180deg,
       #07121d,
@@ -36,8 +48,19 @@ body{
   font-family:
     Inter,
     system-ui,
-    Segoe UI,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
     sans-serif;
+}
+
+button,
+input{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
 }
 
 .wrap{
@@ -52,182 +75,303 @@ body{
 .top{
   position:sticky;
   top:0;
-  z-index:10;
+  z-index:50;
+
   background:
-    rgba(6,16,27,.82);
+    rgba(6,16,27,.84);
+
   backdrop-filter:
-    blur(16px);
+    blur(18px);
+
   border-bottom:
-    1px solid var(--line);
+    1px solid rgba(35,67,91,.8);
 }
 
 .nav{
-  min-height:68px;
+  min-height:70px;
+
   display:flex;
   align-items:center;
   justify-content:space-between;
+
   gap:15px;
 }
 
 .brand{
-  font-weight:900;
-  letter-spacing:-.02em;
+  font-weight:950;
+  letter-spacing:-.03em;
 }
 
 .brand small{
   display:block;
-  color:var(--muted);
-  font-size:10px;
-  font-weight:650;
-  letter-spacing:.08em;
+
   margin-top:3px;
+
+  color:var(--muted);
+
+  font-size:9px;
+  font-weight:700;
+
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+
+.actions{
+  display:flex;
+  gap:8px;
 }
 
 .btn{
+  min-height:42px;
+
+  padding:
+    9px 14px;
+
   border:
     1px solid var(--line);
-  background:#0b1d2d;
-  color:var(--text);
-  padding:10px 14px;
+
   border-radius:12px;
-  font-weight:800;
-  cursor:pointer;
+
+  background:#0b1d2d;
+
+  color:var(--text);
+
+  font-weight:850;
+
   transition:.18s;
 }
 
 .btn:hover{
   transform:translateY(-1px);
-  border-color:#3d6b88;
+  border-color:#42718e;
 }
 
-.btn.primary{
+.btn:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+  transform:none;
+}
+
+.primary{
   background:
     linear-gradient(
       135deg,
-      #3e9cf0,
+      #439ff2,
       #2867d8
     );
+
   border-color:#418fdb;
 }
 
-.btn.green{
+.green{
   background:
     linear-gradient(
       135deg,
       #269f7b,
       #19725b
     );
+
   border-color:#3aaf91;
 }
 
-.btn.danger{
+.danger{
+  color:#ffb0bc;
   background:#35141b;
   border-color:#713240;
-  color:#ffb0bc;
+}
+
+.main{
+  padding:28px 0 60px;
 }
 
 .login{
-  max-width:560px;
-  margin:12vh auto;
-  padding:28px;
+  width:min(560px,100%);
+
+  margin:
+    12vh auto 0;
+
+  padding:30px;
+
   border:
     1px solid var(--line);
-  border-radius:22px;
-  background:var(--panel);
+
+  border-radius:24px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(14,34,52,.98),
+      rgba(7,18,29,.98)
+    );
+
   box-shadow:
-    0 25px 70px rgba(0,0,0,.25);
+    0 30px 90px rgba(0,0,0,.35);
 }
 
 .login h1{
   margin:0 0 8px;
+
+  font-size:30px;
+  letter-spacing:-.04em;
 }
 
 .login p{
   color:var(--muted);
-  line-height:1.6;
+  line-height:1.65;
 }
 
 .input{
   width:100%;
-  padding:13px;
+
+  margin-top:12px;
+
+  padding:13px 14px;
+
   border:
     1px solid var(--line);
-  border-radius:12px;
+
+  border-radius:13px;
+
+  outline:none;
+
   background:#071420;
   color:var(--text);
-  outline:none;
 }
 
 .input:focus{
-  border-color:#3c82ad;
+  border-color:#4280a7;
 }
 
-.main{
-  padding:28px 0 50px;
+.status{
+  margin-top:12px;
+
+  font-size:12px;
+  line-height:1.5;
+}
+
+.success{
+  color:var(--green);
+}
+
+.error{
+  color:var(--red);
+}
+
+.muted{
+  color:var(--muted);
+}
+
+.hidden{
+  display:none!important;
 }
 
 .grid{
   display:grid;
+
   grid-template-columns:
     repeat(4,1fr);
+
   gap:12px;
 }
 
 .stat{
   padding:18px;
+
   border:
     1px solid var(--line);
-  border-radius:17px;
-  background:var(--panel);
+
+  border-radius:18px;
+
+  background:
+    rgba(11,27,43,.9);
 }
 
 .stat b{
   display:block;
+
   color:var(--muted);
-  font-size:11px;
+
+  font-size:10px;
+
   text-transform:uppercase;
-  letter-spacing:.08em;
+
+  letter-spacing:.1em;
 }
 
 .stat strong{
   display:block;
+
   margin-top:8px;
+
   font-size:28px;
+
+  letter-spacing:-.04em;
 }
 
 .section{
-  margin-top:24px;
+  margin-top:22px;
+
   padding:20px;
+
   border:
     1px solid var(--line);
-  border-radius:20px;
-  background:
-    rgba(11,27,43,.78);
-}
 
-.section h2{
-  margin:0 0 14px;
+  border-radius:21px;
+
+  background:
+    rgba(11,27,43,.82);
 }
 
 .section-head{
   display:flex;
-  justify-content:space-between;
+
   align-items:flex-start;
-  gap:15px;
+  justify-content:space-between;
+
+  gap:18px;
+
   flex-wrap:wrap;
 }
 
+.section h2{
+  margin:
+    0 0 7px;
+
+  font-size:21px;
+
+  letter-spacing:-.03em;
+}
+
+.note{
+  margin:0;
+
+  color:var(--muted);
+
+  font-size:12px;
+
+  line-height:1.6;
+}
+
 .download-card{
+  margin-top:16px;
+
   display:grid;
+
   grid-template-columns:
     minmax(0,1fr)
     auto;
-  align-items:center;
+
   gap:20px;
-  padding:20px;
+
+  align-items:center;
+
+  padding:21px;
+
   border:
     1px solid #315f7c;
-  border-radius:17px;
+
+  border-radius:18px;
+
   background:
     linear-gradient(
       145deg,
@@ -237,106 +381,133 @@ body{
 }
 
 .download-title{
-  font-size:18px;
-  font-weight:900;
+  font-size:19px;
+  font-weight:950;
 }
 
 .download-description{
-  margin-top:6px;
+  margin-top:7px;
+
+  max-width:720px;
+
   color:var(--muted);
+
   font-size:12px;
-  line-height:1.55;
+  line-height:1.6;
 }
 
-.download-meta{
-  margin-top:10px;
+.badges{
   display:flex;
-  gap:7px;
+
   flex-wrap:wrap;
+
+  gap:7px;
+
+  margin-top:11px;
 }
 
-.download-meta span{
-  padding:5px 8px;
-  border-radius:999px;
+.badge{
+  padding:
+    5px 8px;
+
   border:
     1px solid #28536c;
+
+  border-radius:999px;
+
   background:#071c2c;
+
   color:#a8d8f3;
+
   font-size:10px;
 }
 
 .download-status{
   margin-top:10px;
+
   color:var(--muted);
+
   font-size:11px;
 }
 
 .table-wrap{
+  margin-top:12px;
+
   overflow:auto;
 }
 
-.table{
+table{
   width:100%;
-  border-collapse:collapse;
+
   min-width:900px;
+
+  border-collapse:collapse;
 }
 
-.table th,
-.table td{
-  padding:11px;
+th,
+td{
+  padding:
+    11px 10px;
+
   border-bottom:
     1px solid #1b3549;
+
   text-align:left;
-  font-size:12px;
+
   vertical-align:top;
+
+  font-size:12px;
 }
 
-.table th{
+th{
   color:#a9c1d1;
-  font-weight:800;
+  font-weight:850;
 }
 
-.muted{
-  color:var(--muted);
+code{
+  padding:
+    2px 5px;
+
+  border-radius:6px;
+
+  background:#071521;
+
+  color:#cbe8f8;
+
+  font-size:11px;
 }
 
 .pill{
   display:inline-block;
-  padding:5px 8px;
-  border-radius:999px;
-  background:#0b2537;
+
+  padding:
+    5px 8px;
+
   border:
     1px solid #25506a;
+
+  border-radius:999px;
+
+  background:#0b2537;
+
   color:#a9daf6;
+
   font-size:10px;
+  font-weight:800;
 }
 
-.row-actions{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap;
-}
+.footer{
+  margin-top:28px;
 
-.note{
-  color:var(--muted);
-  font-size:11px;
-  line-height:1.5;
-}
+  color:#688196;
 
-.danger-text{
-  color:var(--red);
-}
+  font-size:10px;
 
-.success-text{
-  color:var(--green);
-}
-
-.small{
-  padding:7px 10px;
-  font-size:11px;
+  line-height:1.6;
 }
 
 @media(max-width:1000px){
+
   .grid{
     grid-template-columns:
       repeat(2,1fr);
@@ -345,28 +516,34 @@ body{
   .download-card{
     grid-template-columns:1fr;
   }
+
+  .download-card .btn{
+    width:100%;
+  }
 }
 
 @media(max-width:600px){
-  .grid{
-    grid-template-columns:1fr;
+
+  .wrap{
+    width:
+      calc(100% - 18px);
   }
 
   .nav{
-    align-items:flex-start;
-    padding:12px 0;
+    min-height:62px;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
   }
 
   .section{
     padding:15px;
   }
 
-  .main{
-    padding-top:16px;
-  }
-
-  .download-card .btn{
-    width:100%;
+  .login{
+    margin-top:7vh;
+    padding:22px;
   }
 }
 </style>
@@ -375,27 +552,46 @@ body{
 <body>
 
 <header class="top">
+
   <div class="wrap nav">
 
     <div class="brand">
       ✈️ X-Tablet
-      <small>Admin panel</small>
+      <small>Administration console</small>
     </div>
 
-    <button
-      class="btn"
-      id="logout"
-      type="button"
-    >
-      Выйти
-    </button>
+    <div class="actions">
+
+      <button
+        id="refreshBtn"
+        class="btn"
+        type="button"
+        hidden
+      >
+        ↻ Обновить
+      </button>
+
+      <button
+        id="logoutBtn"
+        class="btn"
+        type="button"
+        hidden
+      >
+        Выйти
+      </button>
+
+    </div>
 
   </div>
+
 </header>
+
 
 <main class="wrap main">
 
-  <div
+  <!-- LOGIN -->
+
+  <section
     id="login"
     class="login"
   >
@@ -405,9 +601,9 @@ body{
     </h1>
 
     <p>
-      Доступ только владельцу.
-      Токен используется браузером
-      для запросов к защищённому API.
+      Панель подключается непосредственно
+      к X-Tablet License Server.
+      Токен не сохраняется в GitHub.
     </p>
 
     <input
@@ -415,37 +611,40 @@ body{
       class="input"
       type="password"
       autocomplete="off"
-      placeholder="Admin token"
+      placeholder="Введите ADMIN_TOKEN"
     >
+
+    <button
+      id="loginBtn"
+      class="btn primary"
+      style="margin-top:12px"
+      type="button"
+    >
+      Войти
+    </button>
 
     <div
-      style="margin-top:12px"
-    >
-      <button
-        class="btn primary"
-        id="loginBtn"
-        type="button"
-      >
-        Войти
-      </button>
-    </div>
+      id="loginStatus"
+      class="status"
+    ></div>
 
-    <p
-      id="loginError"
-      class="danger-text"
-    ></p>
+  </section>
 
-  </div>
 
-  <div
+  <!-- APP -->
+
+  <section
     id="app"
-    hidden
+    class="hidden"
   >
 
-    <section
-      class="grid"
+    <!-- STATS -->
+
+    <div
       id="stats"
-    ></section>
+      class="grid"
+    ></div>
+
 
     <!-- FREE DOWNLOAD -->
 
@@ -454,25 +653,25 @@ body{
       <div class="section-head">
 
         <div>
+
           <h2>
-            📦 Бесплатная версия мода
+            📦 Бесплатная версия X-Tablet
           </h2>
 
           <p class="note">
-            Скачивание предназначено
-            для администратора.
-            Файл берётся из
-            <code>
-              server/downloads/X-Tablet-Free.zip
-            </code>.
+            Файл берётся сначала из
+            <code>server/downloads</code>,
+            а если его там нет —
+            автоматически из последнего
+            GitHub Release.
           </p>
+
         </div>
 
       </div>
 
-      <div
-        class="download-card"
-      >
+
+      <div class="download-card">
 
         <div>
 
@@ -480,40 +679,42 @@ body{
             X-Tablet Free
           </div>
 
-          <div
-            class="download-description"
-          >
-            Бесплатная сборка мода
-            для ручного тестирования,
-            проверки установщика
-            и выдачи пользователям
-            вне платной лицензии.
+          <div class="download-description">
+            Административное бесплатное
+            скачивание полной сборки.
+            Кнопка работает напрямую
+            через License Server.
           </div>
 
-          <div
-            class="download-meta"
-          >
-            <span>
+          <div class="badges">
+
+            <span class="badge">
               ZIP
             </span>
 
-            <span>
-              Free
+            <span class="badge">
+              Windows
             </span>
 
-            <span>
-              Admin only
+            <span class="badge">
+              Linux
             </span>
+
+            <span class="badge">
+              macOS
+            </span>
+
           </div>
 
           <div
             id="downloadStatus"
             class="download-status"
           >
-            Готово к скачиванию.
+            Готово.
           </div>
 
         </div>
+
 
         <button
           id="freeDownloadBtn"
@@ -527,17 +728,18 @@ body{
 
     </section>
 
+
     <!-- PAYMENTS -->
 
     <section class="section">
 
       <h2>
-        Последние покупки
+        💳 Последние покупки
       </h2>
 
       <div class="table-wrap">
 
-        <table class="table">
+        <table>
 
           <thead>
 
@@ -561,24 +763,18 @@ body{
 
     </section>
 
+
     <!-- USERS -->
 
     <section class="section">
 
       <h2>
-        Пользователи
+        👥 Пользователи
       </h2>
-
-      <p class="note">
-        Храним только данные Telegram,
-        необходимые магазину:
-        ID, username/имя и связанная
-        лицензия.
-      </p>
 
       <div class="table-wrap">
 
-        <table class="table">
+        <table>
 
           <thead>
 
@@ -603,17 +799,18 @@ body{
 
     </section>
 
+
     <!-- LICENSES -->
 
     <section class="section">
 
       <h2>
-        Лицензии
+        🔑 Лицензии
       </h2>
 
       <div class="table-wrap">
 
-        <table class="table">
+        <table>
 
           <thead>
 
@@ -623,7 +820,7 @@ body{
               <th>Plan</th>
               <th>Статус</th>
               <th>До</th>
-              <th>Device</th>
+              <th>Device ID</th>
             </tr>
 
           </thead>
@@ -638,17 +835,18 @@ body{
 
     </section>
 
+
     <!-- SUPPORT -->
 
     <section class="section">
 
       <h2>
-        Поддержка
+        🆘 Поддержка
       </h2>
 
       <div class="table-wrap">
 
-        <table class="table">
+        <table>
 
           <thead>
 
@@ -673,209 +871,708 @@ body{
 
     </section>
 
-    <!-- PRIVACY -->
 
-    <section class="section">
+    <div class="footer">
 
-      <h2>
-        Обработка персональных данных
-      </h2>
+      X-Tablet Admin · License Server:
+      <code>
+        x-tablet-api.onrender.com
+      </code>
 
-      <p class="note">
-        Данные используются для оплаты,
-        выдачи лицензии, скачивания
-        и поддержки. Перед коммерческим
-        запуском укажите реальные сроки
-        хранения и порядок удаления
-        в политике конфиденциальности.
-      </p>
+    </div>
 
-    </section>
-
-  </div>
+  </section>
 
 </main>
 
+
 <script>
+/*
+ * ==========================================================
+ * X-TABLET ADMIN
+ * ==========================================================
+ *
+ * ВАЖНО:
+ * Панель может находиться где угодно:
+ *
+ * GitHub Pages
+ * Render
+ * локальный сервер
+ *
+ * API всегда идёт напрямую на License Server.
+ */
+
+const API_BASE =
+  'https://x-tablet-api.onrender.com';
+
+
+const STORAGE_KEY =
+  'xt_admin_token';
+
 
 const state = {
   token:
     sessionStorage.getItem(
-      'xt_admin_token'
+      STORAGE_KEY
     ) || ''
 };
 
-const fmt = value =>
-  value
-    ? new Date(value)
-        .toLocaleString(
-          'ru-RU'
-        )
-    : '—';
 
-const esc = value =>
-  String(value ?? '')
+/*
+ * ==========================================================
+ * HELPERS
+ * ==========================================================
+ */
+
+function apiUrl(path) {
+
+  return (
+    API_BASE.replace(
+      /\/$/,
+      ''
+    ) +
+    '/' +
+    String(path).replace(
+      /^\//,
+      ''
+    )
+  );
+
+}
+
+
+function escapeHtml(value) {
+
+  return String(
+    value ?? ''
+  )
+
     .replaceAll(
       '&',
       '&amp;'
     )
+
     .replaceAll(
       '<',
       '&lt;'
     )
+
     .replaceAll(
       '>',
       '&gt;'
     )
+
     .replaceAll(
       '"',
       '&quot;'
+    )
+
+    .replaceAll(
+      "'",
+      '&#039;'
     );
+
+}
+
+
+function formatDate(value) {
+
+  if (
+    value === null ||
+    value === undefined ||
+    value === ''
+  ) {
+    return '—';
+  }
+
+  const number =
+    Number(value);
+
+  const date =
+    Number.isFinite(number) &&
+    number > 1000000000
+      ? new Date(
+          number * 1000
+        )
+      : new Date(
+          value
+        );
+
+  if (
+    Number.isNaN(
+      date.getTime()
+    )
+  ) {
+    return '—';
+  }
+
+  return date.toLocaleString(
+    'ru-RU'
+  );
+
+}
+
+
+function setLoginStatus(
+  text,
+  type = ''
+) {
+
+  const el =
+    document.getElementById(
+      'loginStatus'
+    );
+
+  el.textContent =
+    text || '';
+
+  el.className =
+    `status ${type}`;
+
+}
+
+
+function setDownloadStatus(
+  text,
+  type = ''
+) {
+
+  const el =
+    document.getElementById(
+      'downloadStatus'
+    );
+
+  el.textContent =
+    text || '';
+
+  el.className =
+    `download-status ${type}`;
+
+}
+
+
+/*
+ * ==========================================================
+ * API
+ * ==========================================================
+ */
 
 async function api(
   path,
   options = {}
 ) {
 
-  const response =
-    await fetch(
-      path,
-      {
-        ...options,
-        headers: {
-          ...(options.headers || {}),
-          Authorization:
-            `Bearer ${state.token}`,
-          'Content-Type':
-            'application/json'
+  if (!state.token) {
+    throw new Error(
+      'ADMIN_TOKEN не введён.'
+    );
+  }
+
+
+  let response;
+
+  try {
+
+    response =
+      await fetch(
+        apiUrl(path),
+        {
+          ...options,
+
+          headers: {
+            ...(options.headers || {}),
+
+            Authorization:
+              `Bearer ${state.token}`,
+
+            ...(options.body !== undefined
+              ? {
+                  'Content-Type':
+                    'application/json'
+                }
+              : {})
+          }
         }
-      }
+      );
+
+  } catch (error) {
+
+    throw new Error(
+      'License Server недоступен. Проверьте Render.'
     );
 
-  const data =
-    await response
-      .json()
-      .catch(
-        () => ({})
-      );
+  }
+
+
+  const contentType =
+    response.headers.get(
+      'content-type'
+    ) || '';
+
+
+  let data = null;
+
+
+  if (
+    contentType.includes(
+      'application/json'
+    )
+  ) {
+
+    try {
+
+      data =
+        await response.json();
+
+    } catch {
+
+      data = {};
+
+    }
+
+  } else {
+
+    try {
+
+      const text =
+        await response.text();
+
+      data = {
+        message:
+          text
+      };
+
+    } catch {
+
+      data = {};
+
+    }
+
+  }
+
 
   if (
     !response.ok
   ) {
+
+    if (
+      response.status ===
+      401
+    ) {
+      throw new Error(
+        'Неверный ADMIN_TOKEN.'
+      );
+    }
+
+    if (
+      response.status ===
+      403
+    ) {
+      throw new Error(
+        data?.error ||
+        'Доступ запрещён.'
+      );
+    }
+
     throw new Error(
-      data.error ||
-      'Ошибка сервера'
+      data?.message ||
+      data?.error ||
+      `HTTP ${response.status}`
     );
+
   }
 
-  return data;
+
+  return {
+    response,
+    data
+  };
+
 }
 
-function render(data) {
+
+/*
+ * ==========================================================
+ * LOGIN
+ * ==========================================================
+ */
+
+async function login() {
+
+  const input =
+    document.getElementById(
+      'token'
+    );
+
+  const token =
+    input.value.trim();
+
+
+  if (!token) {
+
+    setLoginStatus(
+      'Введите ADMIN_TOKEN.',
+      'error'
+    );
+
+    return;
+
+  }
+
+
+  state.token =
+    token;
+
+
+  setLoginStatus(
+    'Подключение к License Server...'
+  );
+
+
+  try {
+
+    await loadDashboard();
+
+
+    sessionStorage.setItem(
+      STORAGE_KEY,
+      state.token
+    );
+
+
+    document.getElementById(
+      'token'
+    ).value = '';
+
+
+    setLoginStatus(
+      ''
+    );
+
+
+  } catch (error) {
+
+    state.token =
+      '';
+
+    setLoginStatus(
+      error.message,
+      'error'
+    );
+
+  }
+
+}
+
+
+document.getElementById(
+  'loginBtn'
+).addEventListener(
+  'click',
+  login
+);
+
+
+document.getElementById(
+  'token'
+).addEventListener(
+  'keydown',
+  event => {
+
+    if (
+      event.key ===
+      'Enter'
+    ) {
+      login();
+    }
+
+  }
+);
+
+
+/*
+ * ==========================================================
+ * DASHBOARD
+ * ==========================================================
+ */
+
+async function loadDashboard() {
+
+  const result =
+    await api(
+      '/v1/admin/overview'
+    );
+
+
+  const data =
+    result.data;
+
+
+  if (
+    !data ||
+    !data.summary
+  ) {
+
+    throw new Error(
+      'Сервер вернул некорректные данные.'
+    );
+
+  }
+
 
   document.getElementById(
-    'stats'
-  ).innerHTML = [
+    'login'
+  ).classList.add(
+    'hidden'
+  );
+
+
+  document.getElementById(
+    'app'
+  ).classList.remove(
+    'hidden'
+  );
+
+
+  document.getElementById(
+    'refreshBtn'
+  ).hidden = false;
+
+
+  document.getElementById(
+    'logoutBtn'
+  ).hidden = false;
+
+
+  renderStats(
+    data.summary
+  );
+
+
+  renderPayments(
+    data.payments || []
+  );
+
+
+  renderUsers(
+    data.users || []
+  );
+
+
+  renderLicenses(
+    data.licenses || []
+  );
+
+
+  renderTickets(
+    data.tickets || []
+  );
+
+}
+
+
+/*
+ * ==========================================================
+ * STATS
+ * ==========================================================
+ */
+
+function renderStats(
+  summary
+) {
+
+  const stats =
+    document.getElementById(
+      'stats'
+    );
+
+
+  stats.innerHTML = [
 
     [
       'Пользователи',
-      data.summary.users
+      summary.users ?? 0
     ],
 
     [
       'Лицензии',
-      data.summary.licenses
+      summary.licenses ?? 0
     ],
 
     [
-      'Активны',
-      data.summary.activeLicenses
+      'Активные',
+      summary.activeLicenses ?? 0
     ],
 
     [
       'Stars',
-      data.summary.stars
+      summary.stars ?? 0
     ]
 
   ]
+
     .map(
       item => `
         <div class="stat">
-          <b>${esc(item[0])}</b>
-          <strong>${esc(item[1])}</strong>
+          <b>
+            ${escapeHtml(
+              item[0]
+            )}
+          </b>
+
+          <strong>
+            ${escapeHtml(
+              item[1]
+            )}
+          </strong>
         </div>
       `
     )
+
     .join('');
 
-  document.getElementById(
-    'payments'
-  ).innerHTML =
-    data.payments
-      .slice(0,100)
-      .map(
-        payment => `
-          <tr>
-            <td>
-              ${esc(
-                fmt(
-                  payment.createdAt
-                )
-              )}
-            </td>
+}
 
-            <td>
-              ${esc(
-                payment.telegramUserId
-              )}
-            </td>
 
-            <td>
-              <span class="pill">
-                ${esc(
-                  payment.plan
-                )}
-              </span>
-            </td>
+/*
+ * ==========================================================
+ * PAYMENTS
+ * ==========================================================
+ */
 
-            <td>
-              ${esc(
-                payment.amount
-              )} ⭐
-            </td>
+function renderPayments(
+  payments
+) {
 
-            <td>
-              <code>
-                ${esc(
-                  payment.chargeId
-                )}
-              </code>
-            </td>
-          </tr>
-        `
-      )
-      .join('') ||
-    `
+  const target =
+    document.getElementById(
+      'payments'
+    );
+
+
+  if (!payments.length) {
+
+    target.innerHTML = `
       <tr>
         <td
           colspan="5"
           class="muted"
         >
-          Пока покупок нет.
+          Покупок пока нет.
         </td>
       </tr>
     `;
 
-  document.getElementById(
-    'users'
-  ).innerHTML =
-    data.users
+    return;
+
+  }
+
+
+  target.innerHTML =
+    payments
+      .slice(
+        0,
+        100
+      )
+
+      .map(
+        item => `
+          <tr>
+
+            <td>
+              ${escapeHtml(
+                formatDate(
+                  item.createdAt
+                )
+              )}
+            </td>
+
+            <td>
+              ${escapeHtml(
+                item.telegramUserId
+              )}
+
+              ${
+                item.username
+                  ? `<br><span class="muted">@${escapeHtml(item.username)}</span>`
+                  : ''
+              }
+            </td>
+
+            <td>
+              <span class="pill">
+                ${escapeHtml(
+                  item.plan
+                )}
+              </span>
+            </td>
+
+            <td>
+              ${escapeHtml(
+                item.amount
+              )} ⭐
+            </td>
+
+            <td>
+              <code>
+                ${escapeHtml(
+                  item.chargeId
+                )}
+              </code>
+            </td>
+
+          </tr>
+        `
+      )
+
+      .join('');
+
+}
+
+
+/*
+ * ==========================================================
+ * USERS
+ * ==========================================================
+ */
+
+function renderUsers(
+  users
+) {
+
+  const target =
+    document.getElementById(
+      'users'
+    );
+
+
+  if (!users.length) {
+
+    target.innerHTML = `
+      <tr>
+        <td
+          colspan="6"
+          class="muted"
+        >
+          Пользователей пока нет.
+        </td>
+      </tr>
+    `;
+
+    return;
+
+  }
+
+
+  target.innerHTML =
+    users
+
       .map(
         user => `
           <tr>
 
             <td>
-              ${esc(
+              ${escapeHtml(
                 user.telegramUserId
               )}
             </td>
@@ -884,7 +1581,7 @@ function render(data) {
               ${
                 user.username
                   ? '@' +
-                    esc(
+                    escapeHtml(
                       user.username
                     )
                   : '—'
@@ -893,7 +1590,7 @@ function render(data) {
 
             <td>
               ${
-                esc(
+                escapeHtml(
                   [
                     user.firstName,
                     user.lastName
@@ -902,7 +1599,8 @@ function render(data) {
                       Boolean
                     )
                     .join(' ')
-                ) || '—'
+                ) ||
+                '—'
               }
             </td>
 
@@ -911,7 +1609,7 @@ function render(data) {
                 user.license
                   ? `
                     <code>
-                      ${esc(
+                      ${escapeHtml(
                         user.license
                           .licenseKey
                       )}
@@ -924,19 +1622,19 @@ function render(data) {
             <td>
               ${
                 user.license?.deviceBound
-                  ? 'привязано'
-                  : 'нет'
+                  ? '<span class="pill">Привязано</span>'
+                  : '—'
               }
             </td>
 
             <td>
 
               <button
-                class="btn danger small-del"
-                data-id="${esc(
+                class="btn danger delete-user"
+                type="button"
+                data-id="${escapeHtml(
                   user.telegramUserId
                 )}"
-                type="button"
               >
                 Удалить данные
               </button>
@@ -946,120 +1644,209 @@ function render(data) {
           </tr>
         `
       )
-      .join('') ||
-    `
+
+      .join('');
+
+
+  target
+    .querySelectorAll(
+      '.delete-user'
+    )
+
+    .forEach(
+      button => {
+
+        button.addEventListener(
+          'click',
+          () =>
+            deleteUser(
+              button.dataset.id
+            )
+        );
+
+      }
+    );
+
+}
+
+
+/*
+ * ==========================================================
+ * LICENSES
+ * ==========================================================
+ */
+
+function renderLicenses(
+  licenses
+) {
+
+  const target =
+    document.getElementById(
+      'licenses'
+    );
+
+
+  if (!licenses.length) {
+
+    target.innerHTML = `
       <tr>
         <td
           colspan="6"
           class="muted"
         >
-          Пока пользователей нет.
+          Лицензий пока нет.
         </td>
       </tr>
     `;
 
-  document.getElementById(
-    'licenses'
-  ).innerHTML =
-    data.licenses
+    return;
+
+  }
+
+
+  target.innerHTML =
+    licenses
+
       .map(
-        license => `
-          <tr>
+        license => {
 
-            <td>
-              <code>
-                ${esc(
-                  license.licenseKey
+          const active =
+            Number(
+              license.expiresAt ||
+              0
+            ) >
+            Date.now() / 1000;
+
+
+          return `
+            <tr>
+
+              <td>
+                <code>
+                  ${escapeHtml(
+                    license.licenseKey
+                  )}
+                </code>
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  license.telegramUserId
                 )}
-              </code>
-            </td>
 
-            <td>
-              ${esc(
-                license.telegramUserId
-              )}
-
-              <br>
-
-              <span class="muted">
                 ${
                   license.username
-                    ? '@' +
-                      esc(
-                        license.username
-                      )
+                    ? `<br><span class="muted">@${escapeHtml(license.username)}</span>`
                     : ''
                 }
-              </span>
-            </td>
+              </td>
 
-            <td>
-              ${esc(
-                license.plan
-              )}
-            </td>
+              <td>
+                ${escapeHtml(
+                  license.plan
+                )}
+              </td>
 
-            <td>
-              ${
-                license.expiresAt >
-                Date.now()/1000
-                  ? `
-                    <span class="pill">
-                      ACTIVE
-                    </span>
-                  `
-                  : `
-                    <span class="danger-text">
-                      EXPIRED
-                    </span>
-                  `
-              }
-            </td>
+              <td>
+                ${
+                  active
+                    ? `
+                      <span class="pill">
+                        ACTIVE
+                      </span>
+                    `
+                    : `
+                      <span class="error">
+                        EXPIRED
+                      </span>
+                    `
+                }
+              </td>
 
-            <td>
-              ${fmt(
-                license.expiresAt *
-                1000
-              )}
-            </td>
+              <td>
+                ${escapeHtml(
+                  formatDate(
+                    Number(
+                      license.expiresAt
+                    ) * 1000
+                  )
+                )}
+              </td>
 
-            <td>
-              ${
-                license.deviceId
-                  ? esc(
-                      license.deviceId
-                    )
-                  : '—'
-              }
-            </td>
+              <td>
+                ${
+                  license.deviceId
+                    ? `
+                      <code>
+                        ${escapeHtml(
+                          license.deviceId
+                        )}
+                      </code>
+                    `
+                    : '—'
+                }
+              </td>
 
-          </tr>
-        `
+            </tr>
+          `;
+
+        }
       )
-      .join('') ||
-    `
+
+      .join('');
+
+}
+
+
+/*
+ * ==========================================================
+ * SUPPORT
+ * ==========================================================
+ */
+
+function renderTickets(
+  tickets
+) {
+
+  const target =
+    document.getElementById(
+      'tickets'
+    );
+
+
+  if (!tickets.length) {
+
+    target.innerHTML = `
       <tr>
         <td
           colspan="6"
           class="muted"
         >
-          Лицензий нет.
+          Обращений пока нет.
         </td>
       </tr>
     `;
 
-  document.getElementById(
-    'tickets'
-  ).innerHTML =
-    data.tickets
-      .slice(0,100)
+    return;
+
+  }
+
+
+  target.innerHTML =
+    tickets
+
+      .slice(
+        0,
+        100
+      )
+
       .map(
         ticket => `
           <tr>
 
             <td>
-              ${esc(
-                fmt(
+              ${escapeHtml(
+                formatDate(
                   ticket.createdAt
                 )
               )}
@@ -1067,14 +1854,14 @@ function render(data) {
 
             <td>
               <code>
-                ${esc(
+                ${escapeHtml(
                   ticket.id
                 )}
               </code>
             </td>
 
             <td>
-              ${esc(
+              ${escapeHtml(
                 ticket.telegramUserId
               )}
             </td>
@@ -1083,7 +1870,7 @@ function render(data) {
               ${
                 ticket.username
                   ? '@' +
-                    esc(
+                    escapeHtml(
                       ticket.username
                     )
                   : '—'
@@ -1091,298 +1878,355 @@ function render(data) {
             </td>
 
             <td>
-              ${esc(
+              ${escapeHtml(
                 ticket.message
               )}
             </td>
 
             <td>
-              ${esc(
-                ticket.status ||
-                'open'
-              )}
+              <span class="pill">
+                ${escapeHtml(
+                  ticket.status ||
+                  'open'
+                )}
+              </span>
             </td>
 
           </tr>
         `
       )
-      .join('') ||
-    `
-      <tr>
-        <td
-          colspan="6"
-          class="muted"
-        >
-          Обращений нет.
-        </td>
-      </tr>
-    `;
 
-  document
-    .querySelectorAll(
-      '.small-del'
-    )
-    .forEach(
-      button => {
+      .join('');
 
-        button.onclick =
-          async () => {
-
-            if (
-              !confirm(
-                'Удалить все данные этого Telegram-пользователя из локального магазина?'
-              )
-            ) {
-              return;
-            }
-
-            try {
-
-              await api(
-                '/v1/admin/privacy/delete',
-                {
-                  method:
-                    'POST',
-
-                  body:
-                    JSON.stringify({
-                      telegramUserId:
-                        button.dataset
-                          .id
-                    })
-                }
-              );
-
-              await load();
-
-            } catch (
-              error
-            ) {
-
-              alert(
-                error.message
-              );
-
-            }
-
-          };
-
-      }
-    );
 }
 
-async function load() {
-
-  const data =
-    await api(
-      '/v1/admin/overview'
-    );
-
-  document.getElementById(
-    'login'
-  ).hidden = true;
-
-  document.getElementById(
-    'app'
-  ).hidden = false;
-
-  render(data);
-}
-
-document.getElementById(
-  'loginBtn'
-).onclick =
-  async () => {
-
-    state.token =
-      document
-        .getElementById(
-          'token'
-        )
-        .value
-        .trim();
-
-    try {
-
-      await load();
-
-      sessionStorage.setItem(
-        'xt_admin_token',
-        state.token
-      );
-
-    } catch (
-      error
-    ) {
-
-      document.getElementById(
-        'loginError'
-      ).textContent =
-        'Неверный token или сервер недоступен.';
-
-      state.token = '';
-
-    }
-
-  };
 
 /*
- * Бесплатное скачивание
+ * ==========================================================
+ * DELETE USER
+ * ==========================================================
  */
-document.getElementById(
-  'freeDownloadBtn'
-).onclick =
-  async () => {
 
-    const button =
-      document.getElementById(
-        'freeDownloadBtn'
-      );
+async function deleteUser(
+  telegramUserId
+) {
 
-    const status =
-      document.getElementById(
-        'downloadStatus'
-      );
+  if (
+    !confirm(
+      `Удалить все локальные данные Telegram-пользователя ${telegramUserId}?`
+    )
+  ) {
+    return;
+  }
 
-    const originalText =
-      button.textContent;
 
-    button.disabled =
-      true;
+  try {
 
-    button.textContent =
-      '⏳ Подготавливаем...';
+    await api(
+      '/v1/admin/privacy/delete',
+      {
+        method:
+          'POST',
 
-    status.textContent =
-      'Проверяем файл...';
-
-    try {
-
-      const response =
-        await fetch(
-          '/v1/admin/free-download',
-          {
-            method:
-              'GET',
-
-            headers: {
-              Authorization:
-                `Bearer ${state.token}`
-            }
-          }
-        );
-
-      if (
-        !response.ok
-      ) {
-
-        const data =
-          await response
-            .json()
-            .catch(
-              () => ({})
-            );
-
-        throw new Error(
-          data.message ||
-          data.error ||
-          'Не удалось скачать файл.'
-        );
-
+        body:
+          JSON.stringify({
+            telegramUserId
+          })
       }
+    );
 
-      const blob =
-        await response.blob();
 
-      const url =
-        URL.createObjectURL(
-          blob
-        );
+    await loadDashboard();
 
-      const link =
-        document.createElement(
-          'a'
-        );
 
-      link.href = url;
+  } catch (error) {
 
-      link.download =
-        'X-Tablet-Free.zip';
+    alert(
+      error.message
+    );
 
-      document.body.appendChild(
-        link
+  }
+
+}
+
+
+/*
+ * ==========================================================
+ * FREE DOWNLOAD
+ * ==========================================================
+ */
+
+async function downloadFree() {
+
+  const button =
+    document.getElementById(
+      'freeDownloadBtn'
+    );
+
+
+  button.disabled =
+    true;
+
+
+  button.textContent =
+    '⏳ Скачивание...';
+
+
+  setDownloadStatus(
+    'Получаем X-Tablet-Free.zip...'
+  );
+
+
+  try {
+
+    if (!state.token) {
+      throw new Error(
+        'Сначала войдите в панель.'
+      );
+    }
+
+
+    const response =
+      await fetch(
+        apiUrl(
+          '/v1/admin/free-download'
+        ),
+        {
+          method:
+            'GET',
+
+          headers: {
+            Authorization:
+              `Bearer ${state.token}`
+          }
+        }
       );
 
-      link.click();
 
-      link.remove();
-
-      setTimeout(
-        () =>
-          URL.revokeObjectURL(
-            url
-          ),
-        1000
+    if (
+      response.status ===
+      401
+    ) {
+      throw new Error(
+        'ADMIN_TOKEN недействителен.'
       );
+    }
 
-      status.textContent =
-        '✅ Загрузка началась.';
 
-      status.className =
-        'download-status success-text';
-
-    } catch (
-      error
+    if (
+      response.status ===
+      502
     ) {
 
-      status.textContent =
-        `❌ ${error.message}`;
+      let message =
+        'GitHub Release недоступен.';
 
-      status.className =
-        'download-status danger-text';
+      try {
 
-    } finally {
+        const data =
+          await response.json();
 
-      button.disabled =
-        false;
+        message =
+          data.message ||
+          data.error ||
+          message;
 
-      button.textContent =
-        originalText;
+      } catch {}
+
+      throw new Error(
+        message
+      );
 
     }
 
-  };
+
+    if (
+      !response.ok
+    ) {
+
+      throw new Error(
+        `Ошибка скачивания: HTTP ${response.status}`
+      );
+
+    }
+
+
+    const blob =
+      await response.blob();
+
+
+    if (
+      blob.size === 0
+    ) {
+
+      throw new Error(
+        'Сервер вернул пустой файл.'
+      );
+
+    }
+
+
+    const url =
+      URL.createObjectURL(
+        blob
+      );
+
+
+    const link =
+      document.createElement(
+        'a'
+      );
+
+
+    link.href =
+      url;
+
+    link.download =
+      'X-Tablet-Free.zip';
+
+    link.style.display =
+      'none';
+
+
+    document.body.appendChild(
+      link
+    );
+
+    link.click();
+
+    link.remove();
+
+
+    setTimeout(
+      () =>
+        URL.revokeObjectURL(
+          url
+        ),
+      5000
+    );
+
+
+    setDownloadStatus(
+      '✅ Загрузка началась.',
+      'success'
+    );
+
+
+  } catch (error) {
+
+    setDownloadStatus(
+      `❌ ${error.message}`,
+      'error'
+    );
+
+  } finally {
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      '⬇️ Скачать мод бесплатно';
+
+  }
+
+}
+
 
 document.getElementById(
-  'logout'
-).onclick =
+  'freeDownloadBtn'
+).addEventListener(
+  'click',
+  downloadFree
+);
+
+
+/*
+ * ==========================================================
+ * REFRESH
+ * ==========================================================
+ */
+
+document.getElementById(
+  'refreshBtn'
+).addEventListener(
+  'click',
+  async () => {
+
+    try {
+
+      await loadDashboard();
+
+    } catch (error) {
+
+      alert(
+        error.message
+      );
+
+    }
+
+  }
+);
+
+
+/*
+ * ==========================================================
+ * LOGOUT
+ * ==========================================================
+ */
+
+document.getElementById(
+  'logoutBtn'
+).addEventListener(
+  'click',
   () => {
 
     sessionStorage.removeItem(
-      'xt_admin_token'
+      STORAGE_KEY
     );
+
+    state.token =
+      '';
 
     location.reload();
 
-  };
+  }
+);
 
-if (
-  state.token
-) {
 
-  load().catch(
-    () => {
+/*
+ * ==========================================================
+ * AUTO LOGIN
+ * ==========================================================
+ */
 
-      sessionStorage.removeItem(
-        'xt_admin_token'
-      );
+async function boot() {
 
-      state.token = '';
+  if (
+    !state.token
+  ) {
+    return;
+  }
 
-    }
-  );
+
+  try {
+
+    await loadDashboard();
+
+  } catch {
+
+    sessionStorage.removeItem(
+      STORAGE_KEY
+    );
+
+    state.token =
+      '';
+
+  }
 
 }
+
+
+boot();
 
 </script>
 
