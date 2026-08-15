@@ -3464,26 +3464,32 @@ async function adminFreeDownload(
       fileName
     );
 
+  /*
+   * Если локальный файл существует —
+   * используем его.
+   *
+   * Это сохраняет твою текущую
+   * админскую возможность.
+   */
   if (
-    !fs.existsSync(
+    fs.existsSync(
       filePath
     )
   ) {
-    return json(
+    return streamLocalFile(
       res,
-      404,
-      {
-        error:
-          'free_release_not_uploaded',
-        message:
-          `Положи ${fileName} в server/downloads/`,
-      }
+      filePath,
+      fileName
     );
   }
 
-  return streamLocalFile(
+  /*
+   * Если файла на сервере нет —
+   * берём последнюю сборку
+   * из GitHub Releases.
+   */
+  return redirectRelease(
     res,
-    filePath,
     fileName
   );
 }
