@@ -10,6 +10,21 @@ const CONFIG_FILE = path.join(ROOT, 'config.json');
 const DATA_DIR = path.join(ROOT, 'data');
 const STORE_FILE = path.join(DATA_DIR, 'store.json');
 const DOWNLOAD_DIR = path.join(ROOT, 'downloads');
+const RELEASE_BASE_URL =
+  'https://github.com/Maksim74848/X-Tablet/releases/latest/download';
+
+function releaseUrl(fileName) {
+  return `${RELEASE_BASE_URL}/${encodeURIComponent(fileName)}`;
+}
+
+function redirectRelease(res, fileName) {
+  res.writeHead(302, {
+    location: releaseUrl(fileName),
+    'cache-control': 'no-store',
+  });
+
+  return res.end();
+}
 const KEYS_DIR = path.join(ROOT, 'keys');
 
 const DAY = 86400;
