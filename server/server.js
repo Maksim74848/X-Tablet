@@ -16,7 +16,71 @@ const RELEASE_BASE_URL =
 function releaseUrl(fileName) {
   return `${RELEASE_BASE_URL}/${encodeURIComponent(fileName)}`;
 }
+async function proxyRemoteRelease(
+  res,
+  fileName
+) {
+  const response =
+    await fetch(
+      releaseUrl(fileName)
+    );
 
+  if (!response.ok) {
+    return json(
+      res,
+      502,
+      {
+        error:
+          'release_download_failed',
+        message:
+          `GitHub Release returned ${response.status}`,
+      }
+    );
+  }
+
+  const contentType =
+    response.headers.get(
+      'content-type'
+    ) ||
+    'application/octet-stream';
+
+  const contentLength =
+    response.headers.get(
+      'content-length'
+    );
+
+  const headers = {
+    'content-type':
+      contentType,
+
+    'content-disposition':
+      `attachment; filename="${fileName.replaceAll('"', '')}"`,
+
+    'cache-control':
+      'private, no-store',
+
+    'x-content-type-options':
+      'nosniff',
+  };
+
+  if (contentLength) {
+    headers['content-length'] =
+      contentLength;
+  }
+
+  res.writeHead(
+    200,
+    headers
+  );
+
+  if (!response.body) {
+    return res.end();
+  }
+
+  return Readable
+    .fromWeb(response.body)
+    .pipe(res);
+}
 function redirectRelease(res, fileName) {
   res.writeHead(302, {
     location: releaseUrl(fileName),
