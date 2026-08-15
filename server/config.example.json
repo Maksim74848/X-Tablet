@@ -1,5 +1,5 @@
 {
-  "botToken": "8834144738:AAF580tB2sJSbxtqMps68ddkQnzezEWJsOY",
+  "botToken": "PASTE_BOT_TOKEN_HERE",
   "adminTelegramId": 7489797371,
   "publicSiteUrl": "https://maksim74848.github.io/X-Tablet/",
   "publicApiUrl": "https://YOUR_LICENSE_SERVER",
@@ -12,7 +12,7 @@
     "linux": "X-Tablet-Linux-x64.tar.gz",
     "macos": "X-Tablet-macOS.dmg"
   },
-  "adminToken": "U_S_A_D_1_4"
+  "adminToken": "PASTE_A_LONG_RANDOM_ADMIN_TOKEN_HERE",
   "termsUrl": "https://maksim74848.github.io/X-Tablet/terms",
   "privacyUrl": "https://maksim74848.github.io/X-Tablet/privacy",
   "telegramBotUrl": "https://t.me/XTabletStoreBot"
