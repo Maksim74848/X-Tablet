@@ -1,0 +1,19 @@
+{
+  "botToken": "PASTE_BOT_TOKEN_HERE",
+  "adminTelegramId": 0,
+  "publicSiteUrl": "https://YOUR_SITE",
+  "publicApiUrl": "https://YOUR_LICENSE_SERVER",
+  "listen": "0.0.0.0:8788",
+  "helloWorld": {
+    "enabled": true
+  },
+  "downloads": {
+    "windows": "X-Tablet-Windows-Setup.exe",
+    "linux": "X-Tablet-Linux-x64.tar.gz",
+    "macos": "X-Tablet-macOS.dmg"
+  },
+  "adminToken": "PASTE_A_LONG_RANDOM_ADMIN_TOKEN_HERE",
+  "termsUrl": "https://YOUR_SITE/terms",
+  "privacyUrl": "https://YOUR_SITE/privacy",
+  "telegramBotUrl": "https://t.me/YOUR_XTABLET_BOT"
+}

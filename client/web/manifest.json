@@ -1,0 +1,11 @@
+{
+  "name":"X‑Tablet — X‑Plane companion",
+  "short_name":"X‑Tablet",
+  "start_url":"/",
+  "display":"standalone",
+  "orientation":"any",
+  "background_color":"#07111d",
+  "theme_color":"#07111d",
+  "lang":"ru",
+  "description":"Локальный companion-интерфейс для X‑Plane 12"
+}
