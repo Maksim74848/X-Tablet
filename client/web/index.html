@@ -2192,6 +2192,33 @@ setInterval(
 
 async function startPhonePairing(){
 
+  /*
+   * QR-код НЕ зависит от Telegram.
+   * Сначала показываем локальный QR,
+   * затем отдельно запускаем Telegram pairing.
+   */
+
+  state.pairing.qrUrl =
+    `/api/qr?token=${encodeURIComponent(TOKEN)}`;
+
+  state.pairing.code =
+    '';
+
+  state.pairing.botUrl =
+    '';
+
+  state.pairing.linked =
+    false;
+
+  openModal('phone');
+
+
+  /*
+   * Telegram pairing запускаем отдельно.
+   * Даже если Render/Telegram временно недоступен,
+   * QR телефона всё равно должен появиться.
+   */
+
   try{
 
     const response =
@@ -2214,33 +2241,33 @@ async function startPhonePairing(){
 
     state.pairing.botUrl =
       data.bot_url ||
+      data.botUrl ||
       '';
+
+
+    renderPhone();
 
 
     if (
       state.pairing.code
     ){
 
-      state.pairing.qrUrl =
-        `/api/qr?token=${encodeURIComponent(TOKEN)}`;
+      pollPhonePairing();
 
     }
 
 
-    renderPhone();
-
-    openModal(
-      'phone'
-    );
-
-
-    pollPhonePairing();
-
   }catch(error){
 
+    /*
+     * Не ломаем QR из-за Telegram.
+     */
+
     showToast(
-      `Не удалось создать подключение: ${error.message}`
+      'QR готов. Telegram пока не подключён.'
     );
+
+    renderPhone();
 
   }
 
