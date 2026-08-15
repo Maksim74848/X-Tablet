@@ -380,7 +380,7 @@ type licenseState struct {
 	LastError         string `json:"last_error,omitempty"`
 }
 
-const compiledLicenseServerURL = "https://YOUR_LICENSE_SERVER"
+const compiledLicenseServerURL = "https://x-tablet-api.onrender.com"
 
 func licenseDataDir() string {
 	base := os.Getenv("LOCALAPPDATA")
@@ -1475,3 +1475,13 @@ func main() {
 		logger.Errorf("HTTP server stopped: %v", e)
 	}
 }
+
+
+
+
+
+
+
+
+
+
