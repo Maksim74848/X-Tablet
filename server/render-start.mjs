@@ -20,9 +20,9 @@ const config = {
 
   listen: `0.0.0.0:${port}`,
 
-  helloWorld: {
-    enabled: true
-  },
+ helloWorld: {
+  enabled: false
+},
 
   downloads: {
     windows:
