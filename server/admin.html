@@ -1189,41 +1189,7 @@ async function api(
   };
 
 }
-async function sendInvoice(config, userId, plan) {
-  const p = planOf(plan);
 
-  const payload =
-    `xt:${plan}:${userId}:${randomHex(8)}`;
-
-  return telegram(
-    'sendInvoice',
-    {
-      chat_id: Number(userId),
-
-      title: p.title,
-
-      description:
-        plan === 'pro'
-          ? '30 дней X-Tablet Pro: один ПК, до 4 companion-устройств и расширенные функции.'
-          : '30 дней X-Tablet Standard: один ПК, один companion-экран, live-данные, команды и диагностика.',
-
-      payload,
-
-      currency: 'XTR',
-
-      prices: [
-        {
-          label: p.title,
-          amount: p.stars
-        }
-      ],
-
-      start_parameter:
-        `buy_${plan}`
-    },
-    config
-  );
-}
 
 /*
  * ==========================================================
