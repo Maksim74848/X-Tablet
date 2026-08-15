@@ -2,8 +2,7 @@ name: X-Tablet Build & Release
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -13,268 +12,174 @@ env:
   APP_VERSION: "1.0.0"
 
 jobs:
-
-  # =========================================================
-  # WINDOWS
-  # =========================================================
-
   windows:
-    name: Windows build
     runs-on: windows-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
+      - uses: actions/setup-go@v5
         with:
           go-version: "1.23.x"
           cache-dependency-path: client/go.mod
 
-      - name: Build X-Tablet
+      - name: Build
         working-directory: client
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force dist/windows | Out-Null
-
-          go build `
-            -trimpath `
-            -ldflags="-s -w" `
-            -o dist/windows/X-Tablet.exe .
-
-      - name: Verify executable
-        shell: pwsh
-        run: |
-          if (!(Test-Path "client/dist/windows/X-Tablet.exe")) {
-            throw "X-Tablet.exe was not created"
-          }
+          go build -trimpath -ldflags="-s -w" -o dist/windows/X-Tablet.exe .
 
       - name: Install Inno Setup
-        run: |
-          choco install innosetup --no-progress -y
+        run: choco install innosetup --no-progress -y
 
-      - name: Build installer
+      - name: Installer
         shell: pwsh
         run: |
           & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" `
-            "installer/windows/X-Tablet.iss"
+            installer/windows/X-Tablet.iss
 
+      - name: Verify
+        shell: pwsh
+        run: |
           if (!(Test-Path "installer/windows/dist/X-Tablet-Windows-Setup.exe")) {
-            throw "Windows installer was not created"
+            throw "Windows installer not created"
           }
 
-      - name: Upload Windows installer
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
-          name: xtablet-windows
+          name: windows
           path: installer/windows/dist/X-Tablet-Windows-Setup.exe
-          if-no-files-found: error
-
-
-  # =========================================================
-  # LINUX
-  # =========================================================
 
   linux:
-    name: Linux x64 build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
+      - uses: actions/setup-go@v5
         with:
           go-version: "1.23.x"
           cache-dependency-path: client/go.mod
 
-      - name: Build Linux
+      - name: Build
         working-directory: client
-        shell: bash
         run: |
           mkdir -p dist/linux
 
-          CGO_ENABLED=0 \
-          GOOS=linux \
-          GOARCH=amd64 \
-          go build \
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+            go build \
             -trimpath \
             -ldflags="-s -w" \
             -o dist/linux/X-Tablet .
 
           chmod +x dist/linux/X-Tablet
-
           cp license-server.txt dist/linux/license-server.txt
 
-          cat > dist/linux/README.txt <<'EOF'
-X-Tablet
+          printf '%s\n' \
+            'X-Tablet Linux x64' \
+            '' \
+            'Запустите X-Tablet через графический интерфейс.' \
+            > dist/linux/README.txt
 
-Linux x64 edition.
+          tar -C dist/linux -czf X-Tablet-Linux-x64.tar.gz .
 
-Пользователю не требуется запускать команды терминала
-для активации или настройки лицензии.
-
-Запустите X-Tablet через графический интерфейс.
-EOF
-
-          tar \
-            -C dist/linux \
-            -czf X-Tablet-Linux-x64.tar.gz \
-            .
-
-      - name: Verify Linux package
-        shell: bash
-        run: |
-          test -f client/X-Tablet-Linux-x64.tar.gz
-
-      - name: Upload Linux package
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
-          name: xtablet-linux
+          name: linux
           path: client/X-Tablet-Linux-x64.tar.gz
-          if-no-files-found: error
-
-
-  # =========================================================
-  # MACOS
-  # =========================================================
 
   macos:
-    name: macOS universal build
     runs-on: macos-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
+      - uses: actions/setup-go@v5
         with:
           go-version: "1.23.x"
           cache-dependency-path: client/go.mod
 
-      - name: Build macOS universal binary
+      - name: Build
         working-directory: client
-        shell: bash
         run: |
           mkdir -p dist/macos/X-Tablet.app/Contents/MacOS
           mkdir -p dist/macos/X-Tablet.app/Contents/Resources
 
-          CGO_ENABLED=0 \
-          GOOS=darwin \
-          GOARCH=amd64 \
-          go build \
+          CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 \
+            go build \
             -trimpath \
             -ldflags="-s -w" \
             -o dist/macos/X-Tablet-amd64 .
 
-          CGO_ENABLED=0 \
-          GOOS=darwin \
-          GOARCH=arm64 \
-          go build \
+          CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 \
+            go build \
             -trimpath \
             -ldflags="-s -w" \
             -o dist/macos/X-Tablet-arm64 .
 
-          lipo \
-            -create \
+          lipo -create \
             -output dist/macos/X-Tablet \
             dist/macos/X-Tablet-amd64 \
             dist/macos/X-Tablet-arm64
 
           cp dist/macos/X-Tablet \
-             dist/macos/X-Tablet.app/Contents/MacOS/X-Tablet
-
-          cp license-server.txt \
-             dist/macos/X-Tablet.app/Contents/Resources/license-server.txt
-
-          cat > dist/macos/X-Tablet.app/Contents/Info.plist <<'EOF'
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
-"https://www.apple.com/DTDs/PropertyList-1.0.dtd">
-
-<plist version="1.0">
-<dict>
-    <key>CFBundleDisplayName</key>
-    <string>X-Tablet</string>
-
-    <key>CFBundleExecutable</key>
-    <string>X-Tablet</string>
-
-    <key>CFBundleIdentifier</key>
-    <string>com.xtablet.app</string>
-
-    <key>CFBundleName</key>
-    <string>X-Tablet</string>
-
-    <key>CFBundlePackageType</key>
-    <string>APPL</string>
-
-    <key>CFBundleVersion</key>
-    <string>1.0.0</string>
-
-    <key>CFBundleShortVersionString</key>
-    <string>1.0.0</string>
-</dict>
-</plist>
-EOF
-
-          chmod +x \
             dist/macos/X-Tablet.app/Contents/MacOS/X-Tablet
 
+          cp license-server.txt \
+            dist/macos/X-Tablet.app/Contents/Resources/license-server.txt
+
+          printf '%s\n' \
+            '<?xml version="1.0" encoding="UTF-8"?>' \
+            '<plist version="1.0">' \
+            '<dict>' \
+            '<key>CFBundleDisplayName</key><string>X-Tablet</string>' \
+            '<key>CFBundleExecutable</key><string>X-Tablet</string>' \
+            '<key>CFBundleIdentifier</key><string>com.xtablet.app</string>' \
+            '<key>CFBundleName</key><string>X-Tablet</string>' \
+            '<key>CFBundlePackageType</key><string>APPL</string>' \
+            '<key>CFBundleVersion</key><string>1.0.0</string>' \
+            '<key>CFBundleShortVersionString</key><string>1.0.0</string>' \
+            '</dict>' \
+            '</plist>' \
+            > dist/macos/X-Tablet.app/Contents/Info.plist
+
+          chmod +x dist/macos/X-Tablet.app/Contents/MacOS/X-Tablet
+
           hdiutil create \
-            -volname "X-Tablet" \
+            -volname X-Tablet \
             -srcfolder dist/macos/X-Tablet.app \
             -ov \
             -format UDZO \
             dist/X-Tablet-macOS.dmg
 
-      - name: Upload macOS package
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
-          name: xtablet-macos
+          name: macos
           path: client/dist/X-Tablet-macOS.dmg
-          if-no-files-found: error
-
-
-  # =========================================================
-  # RELEASE + FREE PACKAGE
-  # =========================================================
 
   publish:
-    name: Publish X-Tablet release
-    needs:
-      - windows
-      - linux
-      - macos
-
+    needs: [windows, linux, macos]
     runs-on: ubuntu-latest
 
     steps:
-
-      - name: Download Windows
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
-          name: xtablet-windows
+          name: windows
           path: release
 
-      - name: Download Linux
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
-          name: xtablet-linux
+          name: linux
           path: release
 
-      - name: Download macOS
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
-          name: xtablet-macos
+          name: macos
           path: release
 
-      - name: Build free package
+      - name: Free package
         working-directory: release
-        shell: bash
         run: |
           mkdir free
 
@@ -282,51 +187,33 @@ EOF
           cp X-Tablet-Linux-x64.tar.gz free/
           cp X-Tablet-macOS.dmg free/
 
-          cat > free/README.txt <<'EOF'
-X-Tablet Free
-
-Бесплатная сборка X-Tablet.
-
-В комплекте:
-- Windows installer
-- Linux x64
-- macOS
-
-Пользователю не требуется консоль для установки.
-EOF
+          printf '%s\n' \
+            'X-Tablet Free' \
+            'Windows + Linux x64 + macOS' \
+            > free/README.txt
 
           zip -r X-Tablet-Free.zip free
 
-      - name: Create or update Release
+      - name: Release
         env:
           GH_TOKEN: ${{ github.token }}
-        shell: bash
         run: |
-
-          if gh release view "v${APP_VERSION}" \
-            --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1
-          then
-
-            gh release upload \
-              "v${APP_VERSION}" \
+          if gh release view "v${APP_VERSION}" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "v${APP_VERSION}" \
               release/X-Tablet-Windows-Setup.exe \
               release/X-Tablet-Linux-x64.tar.gz \
               release/X-Tablet-macOS.dmg \
               release/X-Tablet-Free.zip \
               --clobber \
               --repo "$GITHUB_REPOSITORY"
-
           else
-
-            gh release create \
-              "v${APP_VERSION}" \
+            gh release create "v${APP_VERSION}" \
               release/X-Tablet-Windows-Setup.exe \
               release/X-Tablet-Linux-x64.tar.gz \
               release/X-Tablet-macOS.dmg \
               release/X-Tablet-Free.zip \
               --title "X-Tablet ${APP_VERSION}" \
-              --notes "Автоматическая сборка X-Tablet." \
+              --notes "X-Tablet release" \
               --latest \
               --repo "$GITHUB_REPOSITORY"
-
           fi
