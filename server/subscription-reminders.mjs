@@ -6,42 +6,52 @@ function todayKey() {
     .slice(0, 10);
 }
 
-async function sendTelegram(
+async function telegram(
   config,
   chatId,
-  text,
-  replyMarkup = null
+  text
 ) {
-  const response = await fetch(
-    `https://api.telegram.org/bot${config.botToken}/sendMessage`,
-    {
-      method: "POST",
-      headers: {
-        "content-type":
-          "application/json"
-      },
-      body: JSON.stringify({
-        chat_id:
-          Number(chatId),
+  const response =
+    await fetch(
+      `https://api.telegram.org/bot${config.botToken}/sendMessage`,
+      {
+        method: "POST",
 
-        text,
+        headers: {
+          "content-type":
+            "application/json"
+        },
 
-        parse_mode:
-          "HTML",
+        body:
+          JSON.stringify({
+            chat_id:
+              Number(chatId),
 
-        ...(replyMarkup
-          ? {
-              reply_markup:
-                replyMarkup
+            text,
+
+            parse_mode:
+              "HTML",
+
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  {
+                    text:
+                      "⭐ Продлить подписку",
+
+                    callback_data:
+                      "buy"
+                  }
+                ]
+              ]
             }
-          : {})
-      })
-    }
-  );
+          })
+      }
+    );
 
   if (!response.ok) {
     throw new Error(
-      `Telegram reminder failed: HTTP ${response.status}`
+      `Telegram HTTP ${response.status}`
     );
   }
 }
@@ -63,18 +73,12 @@ export function startSubscriptionReminders(
 
     try {
 
-      const current =
+      const now =
         Math.floor(
           Date.now() / 1000
         );
 
-      const reminderDay =
-        DAY * 7;
-
-      const oneDay =
-        DAY;
-
-      const key =
+      const today =
         todayKey();
 
       for (
@@ -97,121 +101,89 @@ export function startSubscriptionReminders(
             0
           );
 
+        const userId =
+          String(
+            license.telegramUserId ||
+            ""
+          );
+
         if (
-          expiresAt <= current
+          !userId ||
+          expiresAt <= now
         ) {
           continue;
         }
 
         const left =
           expiresAt -
-          current;
-
-        const telegramUserId =
-          String(
-            license.telegramUserId ||
-            ""
-          );
-
-        if (!telegramUserId) {
-          continue;
-        }
+          now;
 
         const plan =
-          license.plan === "pro"
+          license.plan ===
+          "pro"
             ? "Pro"
             : "Standard";
 
-        /*
-         * 7 дней
-         */
-
         if (
           left <=
-            reminderDay &&
+            7 * DAY &&
           left >
             6 * DAY &&
           license.reminder7dDate !==
-            key
+            today
         ) {
 
-          await sendTelegram(
+          await telegram(
             config,
-            telegramUserId,
+            userId,
 
-            `📅 <b>Подписка X-Tablet заканчивается через неделю</b>\n\n` +
-            `Тариф: <b>${plan}</b>\n` +
-            `Действует до: <b>${new Date(expiresAt * 1000).toLocaleDateString("ru-RU")}</b>\n\n` +
-            `Продлите подписку заранее, чтобы не потерять доступ.`,
-
-            {
-              inline_keyboard: [
-                [
-                  {
-                    text:
-                      "⭐ Продлить подписку",
-
-                    callback_data:
-                      `buy_${license.plan}`
-                  }
-                ]
-              ]
-            }
+            `📅 <b>Напоминание X-Tablet</b>\n\n` +
+            `Ваша подписка <b>${plan}</b> ` +
+            `заканчивается через неделю.\n\n` +
+            `Дата окончания: <b>` +
+            `${new Date(
+              expiresAt * 1000
+            ).toLocaleDateString(
+              "ru-RU"
+            )}` +
+            `</b>\n\n` +
+            `Продлите подписку заранее, ` +
+            `чтобы X-Tablet продолжил работать.`
           );
 
           license.reminder7dDate =
-            key;
-
-          license.updatedAt =
-            new Date().toISOString();
+            today;
 
           continue;
         }
 
-        /*
-         * 1 день
-         */
-
         if (
           left <=
-            oneDay &&
-          left >
-            0 &&
+            DAY &&
+          left > 0 &&
           license.reminder1dDate !==
-            key
+            today
         ) {
 
-          await sendTelegram(
+          await telegram(
             config,
-            telegramUserId,
+            userId,
 
-            `⚠️ <b>Подписка X-Tablet заканчивается завтра</b>\n\n` +
+            `⚠️ <b>X-Tablet заканчивается завтра</b>\n\n` +
             `Тариф: <b>${plan}</b>\n` +
-            `Действует до: <b>${new Date(expiresAt * 1000).toLocaleDateString("ru-RU")}</b>\n\n` +
-            `Продлите её сейчас, чтобы X-Tablet продолжил работать.`,
-
-            {
-              inline_keyboard: [
-                [
-                  {
-                    text:
-                      "⭐ Продлить",
-
-                    callback_data:
-                      `buy_${license.plan}`
-                  }
-                ]
-              ]
-            }
+            `Окончание: <b>` +
+            `${new Date(
+              expiresAt * 1000
+            ).toLocaleDateString(
+              "ru-RU"
+            )}` +
+            `</b>\n\n` +
+            `Продлите подписку сейчас.`
           );
 
           license.reminder1dDate =
-            key;
-
-          license.updatedAt =
-            new Date().toISOString();
+            today;
         }
-
       }
 
       saveStore(store);
@@ -228,7 +200,6 @@ export function startSubscriptionReminders(
       running = false;
 
     }
-
   }
 
   run();
