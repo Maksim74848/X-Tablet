@@ -11,8 +11,12 @@ const config = {
   botToken: process.env.BOT_TOKEN || "",
   adminTelegramId: Number(process.env.ADMIN_TELEGRAM_ID || 0),
 
-  publicSiteUrl: process.env.PUBLIC_SITE_URL || "",
-  publicApiUrl: process.env.PUBLIC_API_URL || "",
+  publicSiteUrl:
+    process.env.PUBLIC_SITE_URL ||
+    "https://maksim74848.github.io/X-Tablet/",
+
+  publicApiUrl:
+    process.env.PUBLIC_API_URL || "",
 
   listen: `0.0.0.0:${port}`,
 
@@ -36,17 +40,23 @@ const config = {
 
   adminToken: process.env.ADMIN_TOKEN || "",
 
-  termsUrl: process.env.TERMS_URL || "",
-  privacyUrl: process.env.PRIVACY_URL || "",
-  telegramBotUrl: process.env.TELEGRAM_BOT_URL || ""
+  termsUrl:
+    process.env.TERMS_URL ||
+    "https://maksim74848.github.io/X-Tablet/terms",
+
+  privacyUrl:
+    process.env.PRIVACY_URL ||
+    "https://maksim74848.github.io/X-Tablet/privacy",
+
+  telegramBotUrl:
+    process.env.TELEGRAM_BOT_URL ||
+    "https://t.me/XTabletStoreBot"
 };
 
 const required = [
   ["BOT_TOKEN", config.botToken],
-  ["PUBLIC_SITE_URL", config.publicSiteUrl],
   ["PUBLIC_API_URL", config.publicApiUrl],
-  ["ADMIN_TOKEN", config.adminToken],
-  ["TELEGRAM_BOT_URL", config.telegramBotUrl]
+  ["ADMIN_TOKEN", config.adminToken]
 ];
 
 for (const [name, value] of required) {
@@ -66,6 +76,11 @@ fs.writeFileSync(
   JSON.stringify(config, null, 2),
   "utf8"
 );
+
+console.log("X-Tablet configuration generated successfully.");
+console.log(`API: ${config.publicApiUrl}`);
+console.log(`Telegram bot: ${config.telegramBotUrl}`);
+console.log(`Listen: ${config.listen}`);
 
 const child = spawn(
   process.execPath,
