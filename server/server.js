@@ -4379,21 +4379,12 @@ async function main() {
                 fileName
               );
 
-            if (
-              !fs.existsSync(
-                filePath
-              )
-            ) {
-              return json(
-                res,
-                404,
-                {
-                  error:
-                    'release_not_uploaded',
-                }
-              );
-            }
-
+         if (!fs.existsSync(filePath)) {
+  return redirectRelease(
+    res,
+    fileName
+  );
+}
             const uses =
               Number(
                 entry.uses || 0
