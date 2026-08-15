@@ -94,5 +94,340 @@ function maybeShowPhoneConnect(){const params=new URLSearchParams(location.searc
 const es=new EventSource('/events');es.onmessage=e=>{try{const m=JSON.parse(e.data);if(m.type==='status'){state.status=m.data||state.status;state.flight=state.status.flight||state.flight;render();}if(m.type==='flight'){state.flight=m.data||state.flight;updateChrome();updateLiveDOM();}if(m.type==='commands'){state.commands=m.data||[];if(state.page==='controls')renderCommands();}}catch{}};es.onerror=()=>{if(state.status.online){state.status.online=false;updateChrome();toast('Связь с X‑Tablet потеряна');}};
 refreshLicense().then(()=>{render();maybeShowPhoneConnect();});
 </script>
+  <style>
+#xt-onboarding {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+
+  display: none;
+  place-items: center;
+
+  padding: 18px;
+
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(67, 147, 223, .18),
+      transparent 38%
+    ),
+    rgba(3, 9, 15, .92);
+
+  backdrop-filter: blur(18px);
+}
+
+#xt-onboarding.show {
+  display: grid;
+}
+
+.xt-card {
+  width: min(620px, 100%);
+  padding: 30px;
+
+  border:
+    1px solid #24445d;
+
+  border-radius: 26px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #0d2235,
+      #07131f
+    );
+
+  box-shadow:
+    0 35px 100px rgba(0,0,0,.55);
+}
+
+.xt-logo {
+  width: 58px;
+  height: 58px;
+
+  display: grid;
+  place-items: center;
+
+  margin-bottom: 18px;
+
+  border-radius: 17px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #7dd3fc,
+      #3b82f6
+    );
+
+  color: #06111c;
+
+  font-size: 20px;
+  font-weight: 950;
+}
+
+.xt-card h2 {
+  margin: 0;
+
+  font-size: 29px;
+  letter-spacing: -.04em;
+}
+
+.xt-card p {
+  margin: 10px 0 0;
+
+  color: #8fa9ba;
+
+  line-height: 1.6;
+}
+
+.xt-steps {
+  display: grid;
+
+  gap: 9px;
+
+  margin-top: 22px;
+}
+
+.xt-step {
+  display: grid;
+  grid-template-columns: 38px 1fr;
+
+  gap: 11px;
+
+  padding: 13px;
+
+  border:
+    1px solid #17364d;
+
+  border-radius: 15px;
+
+  background: #071522;
+}
+
+.xt-step-num {
+  width: 38px;
+  height: 38px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 12px;
+
+  background: #102c45;
+
+  color: #9cd8ff;
+
+  font-weight: 900;
+}
+
+.xt-step b {
+  display: block;
+}
+
+.xt-step span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #718ca0;
+
+  font-size: 11px;
+}
+
+.xt-start {
+  width: 100%;
+
+  margin-top: 22px;
+
+  min-height: 48px;
+
+  border:
+    1px solid #3b8de1;
+
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #3b82f6,
+      #2563eb
+    );
+
+  color: #fff;
+
+  font-size: 14px;
+  font-weight: 850;
+}
+</style>
+
+<div id="xt-onboarding">
+  <div class="xt-card">
+
+    <div class="xt-logo">
+      XT
+    </div>
+
+    <h2>
+      Добро пожаловать в X-Tablet
+    </h2>
+
+    <p>
+      Всё уже готово. Никаких команд,
+      терминала или ручной настройки.
+      Программа сама проведёт вас
+      через подключение.
+    </p>
+
+    <div class="xt-steps">
+
+      <div class="xt-step">
+        <div class="xt-step-num">
+          1
+        </div>
+
+        <div>
+          <b>
+            Проверим X-Plane 12
+          </b>
+
+          <span>
+            X-Tablet автоматически
+            определит доступность симулятора.
+          </span>
+        </div>
+      </div>
+
+      <div class="xt-step">
+        <div class="xt-step-num">
+          2
+        </div>
+
+        <div>
+          <b>
+            Подключим аккаунт
+          </b>
+
+          <span>
+            Лицензия и срок подписки
+            подтянутся автоматически.
+          </span>
+        </div>
+      </div>
+
+      <div class="xt-step">
+        <div class="xt-step-num">
+          3
+        </div>
+
+        <div>
+          <b>
+            Подключим телефон
+          </b>
+
+          <span>
+            Программа покажет QR-код
+            и сама проведёт pairing.
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+    <button
+      id="xt-start"
+      class="xt-start"
+      type="button"
+    >
+      Начать настройку
+    </button>
+
+  </div>
+</div>
+
+<script>
+(function () {
+
+  const overlay =
+    document.getElementById(
+      'xt-onboarding'
+    );
+
+  const button =
+    document.getElementById(
+      'xt-start'
+    );
+
+  if (!overlay || !button) {
+    return;
+  }
+
+  const KEY =
+    'xt_onboarding_completed';
+
+  function show() {
+    overlay.classList.add(
+      'show'
+    );
+  }
+
+  function hide() {
+    overlay.classList.remove(
+      'show'
+    );
+
+    localStorage.setItem(
+      KEY,
+      '1'
+    );
+  }
+
+  button.addEventListener(
+    'click',
+    function () {
+
+      hide();
+
+      /*
+       * Сначала стараемся открыть
+       * подключение телефона.
+       *
+       * Если текущий UI уже имеет
+       * openPairing(), используем его.
+       */
+      if (
+        typeof window.openPairing ===
+        'function'
+      ) {
+        window.openPairing();
+        return;
+      }
+
+      /*
+       * Иначе просто оставляем
+       * пользователя на Главной.
+       */
+      const home =
+        document.querySelector(
+          '[data-page="home"]'
+        );
+
+      if (home) {
+        home.click();
+      }
+
+    }
+  );
+
+  if (
+    localStorage.getItem(KEY) !==
+    '1'
+  ) {
+    setTimeout(
+      show,
+      350
+    );
+  }
+
+})();
+</script>
 </body>
 </html>
